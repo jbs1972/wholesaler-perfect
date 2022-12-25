@@ -1,0 +1,165 @@
+wholesalerPerfect.Login
+-splash:src/images/Banner01.jpg
+SplashScreen-Image: images/Banner01.jpg
+
+Exclude the following keys:
+Ctrl+C
+Ctrl+V
+Ctrl+X
+Ctrl+A
+
+Alt+F*
+Alt+Y*
+Alt+B*
+Alt+P*
+Alt+S*
+
+##Remaining##
+
+For Ctrl::~~
+F
+H
+J
+K
+Q
+W
+Z
+
+For Alt::~~
+A
+H
+J
+K
+L
+M
+N
+O
+Q
+U
+V
+W
+Z
+
+For Ctrl+Alt::~~
+A
+D
+E
+F
+G
+H
+I
+J
+K
+M
+O
+P
+Q
+T
+U
+V
+W
+X
+Y
+Z
+
+For Shift+Alt::~~
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+
+For Shift+Alt::~~
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+
+File::--
+Login Details - Ctrl+Alt+L
+Calculator - Ctrl+Alt+C
+Notepad - Ctrl+Alt+N
+Exit - Alt+X
+
+System Setup::--
+Edit Enterprise Data - Ctrl+E
+User Profile - Ctrl+U
+Financial Year - Ctrl+Y
+Database Backup - Ctrl+Alt+B
+Database Restore - Ctrl+Alt+R
+
+Business Setup::--
+Payment Mode Master - Alt+T
+company Master - Alt+C
+Item - 
+	Item Master - Ctrl+I
+	Item Details - Ctrl+D
+Super Stockist - Alt+T
+Retailer - 
+	Beat - Ctrl+B
+	Retailer Master - Ctrl+R
+
+Purchase::--
+Purchase - Ctrl+P
+Edit/Delete Purchase - Ctrl+T
+
+Sale::--
+Sale - Ctrl+S
+Edit/Delete Sale - Alt+E
+
+Print::--
+Re-print Sale Bill - Ctrl+N
+
+Miscellaneous Reports::--
+Daily Dispatch Report - Alt+D
+Purchase Cost Report - Ctrl+O
+Item Stock Ledger - Ctrl+M
+Item Stock Report - Alt+I
+Purchase GST Report - Alt+G
+Sale GST Report - Ctrl+G
+Partywise Product Sale Report - Alt+R
+Stock Landing Price Report - Ctrl+L
+

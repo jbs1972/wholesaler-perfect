@@ -1,0 +1,94 @@
+// Table PurchaseMaster, no. of columns - 22
+/*
+pmid, ssid, compid, invno, invdt, netqty, netgross, netitemdisc, nettaxable, tradediscper, nettradediscamt, 
+replacementdiscper, netreplacementdiscamt, netgstamt, grosspayableamt, roundoff, netpayableamt, dispscheme, 
+finalamt, isopening, amtpaid, isactive
+*/
+
+// Table PurchaseSub, no. of columns - 16
+/*
+psid, pmid, itemdid, gst, exgst, ingst, mrp, qty, gross, discamt, taxableamt, gstamt, qtysold, retqty, 
+tradediscamt, replacementdiscamt
+*/
+
+-- Gross showing the value after applying item wise discount.
+-- GST is getting applied applying Trade and Replacement discount.
+
+ALTERED TABLE STRUCTURE::
+// Table PurchaseMasterV2, no. of columns - 20
+/*
+pmid, ssid, compid, invno, invdt, netqty, netitemdisc, netgross, tradediscper, nettradediscamt, 
+replacementdiscper, netreplacementdiscamt, netgstamt, amtaftergst, roundoff, dispscheme, 
+netpayableamt, isopening, amtpaid, isactive
+*/
+
+// Table PurchaseSubV2, no. of columns - 12
+/*
+psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
+*/
+
+// Table PurchaseGSTV2, no. of columns - 5
+/*
+pgstid, pmid, gstper, taxableamt, gstamt
+*/
+
+// No. of columns in table - 11
+/*
+SLN., PARTICULARS, MRP, HSN, GST %, QTY., UOM, RATE, DISC. %, DISC. AMT., AMOUNT
+*/
+
+// No. of columns in table - 5
+/*
+SLN., TYPE, GST %, TAXABLE AMT., GST AMT.
+*/
+	
+// Table SaleMasterV2, no. of columns - 24
+/*
+salemid, compid, saledt, ordno, orddt, retid, deliverynote, paymentterm, transporter, vehicleno, 
+supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcashdiscamt, 
+netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
+*/
+
+// Table SaleSubV2, no. of columns - 16
+/*
+salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
+itemdiscamt, cashdiscamt, gstamt, amount, retqty
+*/
+
+// No. of columns in table - 15
+/*
+SLN., PUR. INV., ITEM, MRP, GST%, QTY., FREE, RATE, GROSS, ITEM DISC. %, 
+ITEM DISC. AMT., CD AMT., CGST AMT., SGST AMT., AMOUNT
+*/
+
+				// BILL PRINT COLUMNS
+                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
+                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+
+// Table CompanyMaster, no. of columns - 4
+// compid, compnm, compabbr, isactive
+
+// Purchase Cost Report - No. of columns 15
+/*
+SLN., INV. NO., INV. DATE, ITEM, HSN, QTY., MRP, RATE, ITEM DISC.%, 
+TRADE DISC.%, REPCL. DISC.%, GST, UNIT COST, ON HAND, NET COST 
+*/
+
+// Table ItemMaster, no. of columns - 5
+// itemmid, compid, itemnm, hsn, isactive
+
+// Table ItemDetails, no. of columns - 10
+// itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive
+
+// Table ItemLedger, no. of columns - 9
+// ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty
+
+// Partywise Product Sale Report - 15 Cloumns
+/*
+SLN., RETAILER, INVOICE NO., INVOICE DATE, COMPANY, PRODUCT, HSN, MRP., QTY., 
+NET MRP., TAXABLE AMT., GST %, CGST AMT., SGST AMT., LANDING PRICE
+*/
+
+// Item Stock Re3port - 7 Cloumns
+// SLN., COMPANY, ITEM, HSN, MRP, GST %, QTY ONHAND
+
