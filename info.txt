@@ -55,10 +55,10 @@ salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper,
 itemdiscamt, cashdiscamt, gstamt, amount, retqty
 */
 
-// No. of columns in table - 15
+// Item Sale Table - 13
 /*
-SLN., PUR. INV., ITEM, MRP, GST%, QTY., FREE, RATE, GROSS, ITEM DISC. %, 
-ITEM DISC. AMT., CD AMT., CGST AMT., SGST AMT., AMOUNT
+SLN., PUR. INV., ITEM, MRP, GST%, QTY., FREE, 
+RATE, GROSS, CD AMT., CGST AMT., SGST AMT., AMOUNT
 */
 
 				// BILL PRINT COLUMNS

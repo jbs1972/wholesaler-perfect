@@ -882,7 +882,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
 //            Sale01 ref=new Sale01(jDesktopPane1, up, e, false);
 //            Sale02 ref=new Sale02(jDesktopPane1, up, e, false);
-            SaleV2 ref=new SaleV2(jDesktopPane1, up, e, false);
+            SaleV3 ref=new SaleV3(jDesktopPane1, up, e, false);
             ref.setVisible(true);
             jDesktopPane1.add(ref);
             ref.show();
