@@ -101,17 +101,9 @@ public class ItemMaster extends javax.swing.JInternalFrame {
         jTabbedPane1.setMnemonicAt(1, KeyEvent.VK_L);
         jTabbedPane1.setMnemonicAt(2, KeyEvent.VK_D);
    
-        SwingUtilities.invokeLater
-        (
-            new Runnable() 
-            {
-                @Override
-                public void run() 
-                {
-                    jComboBox1.requestFocusInWindow();
-                }
-            }
-        );
+        SwingUtilities.invokeLater (() -> {
+            jComboBox1.requestFocusInWindow();
+        });
     }
     
     public String getNewItemnm()

@@ -1,10 +1,10 @@
 package dto;
 
 public class SaleSubV2 {
-    // Table SaleSubV2, no. of columns - 16
+    // Table SaleSubV2, no. of columns - 17
     /*
-    salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-    itemdiscamt, cashdiscamt, gstamt, amount, retqty
+    salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+    gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
     */
     private String salesid = ""; 
     private String salemid = ""; 
@@ -14,6 +14,7 @@ public class SaleSubV2 {
     private String gst = ""; 
     private String qty = ""; 
     private String free = ""; 
+    private String unitnetrate = "";
     private String rate = ""; 
     private String gross = ""; 
     private String itemdiscper = ""; 
@@ -93,6 +94,14 @@ public class SaleSubV2 {
 
     public void setRate(String rate) {
         this.rate = rate;
+    }
+
+    public String getUnitnetrate() {
+        return unitnetrate;
+    }
+
+    public void setUnitnetrate(String unitnetrate) {
+        this.unitnetrate = unitnetrate;
     }
 
     public String getGross() {

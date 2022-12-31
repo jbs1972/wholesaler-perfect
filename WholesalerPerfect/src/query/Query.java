@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import utilities.DateConverter;
 
@@ -758,10 +757,10 @@ public class Query {
         supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcashdiscamt, 
         netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
         */
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         String deleteSQL1 = "DELETE FROM SaleSubV2 WHERE salemid=?";
         String deleteSQL2 = "DELETE FROM SaleMasterV2 WHERE salemid=?";
@@ -1465,14 +1464,14 @@ public class Query {
                 + "remarks) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                 + "?, ?, ?, ?, ?, ?, ?, ?)";
         
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         String insertTableSQL2 = "insert into SaleSubV2 (salesid, salemid, psid, itemdid, mrp, "
-                + "gst, qty, free, rate, gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, "
-                + "amount, retqty) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "gst, qty, free, unitnetrate, rate, gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, "
+                + "amount, retqty) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             db=new dBConnection();
             conn=db.setConnection();
@@ -1514,10 +1513,10 @@ public class Query {
             
             preparedStatementInsert2 = conn.prepareStatement(insertTableSQL2);
             for(SaleSubV2 ss : sm.getSsAl()) {
-                // Table SaleSubV2, no. of columns - 16
+                // Table SaleSubV2, no. of columns - 17
                 /*
-                salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-                itemdiscamt, cashdiscamt, gstamt, amount, retqty
+                salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+                gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
                 */
                 preparedStatementInsert2.setInt(1, ++salesid);
                 preparedStatementInsert2.setString(2, sm.getSalemid());
@@ -1527,14 +1526,15 @@ public class Query {
                 preparedStatementInsert2.setDouble(6, Double.parseDouble(ss.getGst()));
                 preparedStatementInsert2.setInt(7, Integer.parseInt(ss.getQty()));
                 preparedStatementInsert2.setInt(8, Integer.parseInt(ss.getFree()));
-                preparedStatementInsert2.setDouble(9, Double.parseDouble(ss.getRate()));
-                preparedStatementInsert2.setDouble(10, Double.parseDouble(ss.getGross()));
-                preparedStatementInsert2.setDouble(11, Double.parseDouble(ss.getItemdiscper()));
-                preparedStatementInsert2.setDouble(12, Double.parseDouble(ss.getItemdiscamt()));
-                preparedStatementInsert2.setDouble(13, Double.parseDouble(ss.getCashdiscamt()));
-                preparedStatementInsert2.setDouble(14, Double.parseDouble(ss.getGstamt()));
-                preparedStatementInsert2.setDouble(15, Double.parseDouble(ss.getAmount()));
-                preparedStatementInsert2.setInt(16, Integer.parseInt(ss.getRetqty()));
+                preparedStatementInsert2.setDouble(9, Double.parseDouble(ss.getUnitnetrate()));
+                preparedStatementInsert2.setDouble(10, Double.parseDouble(ss.getRate()));
+                preparedStatementInsert2.setDouble(11, Double.parseDouble(ss.getGross()));
+                preparedStatementInsert2.setDouble(12, Double.parseDouble(ss.getItemdiscper()));
+                preparedStatementInsert2.setDouble(13, Double.parseDouble(ss.getItemdiscamt()));
+                preparedStatementInsert2.setDouble(14, Double.parseDouble(ss.getCashdiscamt()));
+                preparedStatementInsert2.setDouble(15, Double.parseDouble(ss.getGstamt()));
+                preparedStatementInsert2.setDouble(16, Double.parseDouble(ss.getAmount()));
+                preparedStatementInsert2.setInt(17, Integer.parseInt(ss.getRetqty()));
                 preparedStatementInsert2.addBatch(); 
             }
             preparedStatementInsert2.executeBatch();
@@ -1628,12 +1628,12 @@ public class Query {
                 sm.setRemarks(rs.getString("remarks"));
                 
                 ArrayList<SaleSubV2> ssAl=new ArrayList<>();
-                // Table SaleSubV2, no. of columns - 16
+                // Table SaleSubV2, no. of columns - 17
                 /*
-                salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-                itemdiscamt, cashdiscamt, gstamt, amount, retqty
+                salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+                gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
                 */
-                query="select salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, "
+                query="select salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, gross, "
                         + "itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty from "
                         + "SaleSubV2 where salemid='"+salemid+"'"; 
                 System.out.println(query);
@@ -1655,6 +1655,7 @@ public class Query {
                         ss.setGst(rs1.getString("gst"));
                         ss.setQty(rs1.getString("qty"));
                         ss.setFree(rs1.getString("free"));
+                        ss.setUnitnetrate(rs1.getString("unitnetrate"));
                         ss.setRate(rs1.getString("rate"));
                         ss.setGross(rs1.getString("gross"));
                         ss.setItemdiscper(rs1.getString("itemdiscper"));

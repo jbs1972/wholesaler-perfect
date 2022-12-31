@@ -213,10 +213,10 @@ public class PartywiseProductSaleReport extends javax.swing.JInternalFrame imple
         supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcashdiscamt, 
         netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
         */
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         String query="select x.itemdid, x.hsn, x.itemnm "
                 + "from "
@@ -341,10 +341,10 @@ public class PartywiseProductSaleReport extends javax.swing.JInternalFrame imple
         supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcashdiscamt, 
         netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
         */
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         // Number of columns in Retailer: 18
         /* retid, beatid, retnm, contactperson, rstreet, rcity, rdist, rstate, rstatecode, 

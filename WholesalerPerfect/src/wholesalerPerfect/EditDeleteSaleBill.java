@@ -196,10 +196,10 @@ public class EditDeleteSaleBill extends javax.swing.JInternalFrame implements AW
         supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcashdiscamt, 
         netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
         */
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         String query="select salemid, saledt, beatabbr, totlines, retnm, netpayableamt, summrp from "
                 + "(select"+e+" salemid, retid, saledt, netpayableamt from SaleMasterV2 where isactive=1 and "
@@ -329,7 +329,7 @@ public class EditDeleteSaleBill extends javax.swing.JInternalFrame implements AW
                     return;
                 }
                 SaleMasterV2 sm = q.getSaleMasterV2(salemidArray[selectedrow-1]);
-                final EditDeleteSaleBillSubV2 ref=new EditDeleteSaleBillSubV2(jDesktopPane, up, e, sm);
+                final EditDeleteSaleBillSubV3 ref=new EditDeleteSaleBillSubV3(jDesktopPane, up, e, sm);
                 ref.addInternalFrameListener(new InternalFrameAdapter() {
                     @Override
                     public void internalFrameClosed(InternalFrameEvent e1) {

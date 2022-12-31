@@ -543,7 +543,7 @@ public class SaleV2 extends javax.swing.JInternalFrame implements AWTEventListen
                     currentGstAmt = null;
 
                     jComboBox3.setSelectedIndex(0);
-                    innerFornFlush();
+                    innerFormFlush();
 
                     jComboBox3.requestFocusInWindow();
                     return;
@@ -627,7 +627,7 @@ public class SaleV2 extends javax.swing.JInternalFrame implements AWTEventListen
         currentGstAmt = null;
         
         jComboBox3.setSelectedIndex(0);
-        innerFornFlush();
+        innerFormFlush();
         
         jComboBox3.requestFocusInWindow();
     }
@@ -835,7 +835,7 @@ public class SaleV2 extends javax.swing.JInternalFrame implements AWTEventListen
         }
     }
     
-    private void innerFornFlush() {
+    private void innerFormFlush() {
         jLabel14.setText("N/A");
         jLabel15.setText("0");
         jLabel17.setText("0");
@@ -1168,11 +1168,10 @@ public class SaleV2 extends javax.swing.JInternalFrame implements AWTEventListen
         jTextField4.setText("N/A");
         jDateChooser3.setDate(date1);
         jTextField10.setText("0");
-        jButton1.setEnabled(true);
         
         clearTable(jTable1);
         jComboBox3.removeAllItems();
-        innerFornFlush();
+        innerFormFlush();
         jLabel35.setText("0");
         jLabel36.setText("0");
         jLabel38.setText("0");
@@ -1212,7 +1211,6 @@ public class SaleV2 extends javax.swing.JInternalFrame implements AWTEventListen
             jDateChooser1.requestFocusInWindow();
             return;
         }
-        String ordno = jTextField1.getText().trim().toUpperCase();
         Date ordDt =jDateChooser2.getDate();
         String orddt=null;
         try {

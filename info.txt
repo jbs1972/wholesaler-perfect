@@ -49,22 +49,26 @@ supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcas
 netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
 */
 
-// Table SaleSubV2, no. of columns - 16
+// Table SaleSubV2, no. of columns - 17
 /*
-salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-itemdiscamt, cashdiscamt, gstamt, amount, retqty
+salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
 */
 
-// Item Sale Table - 13
+// Item Sale Table - 14
 /*
-SLN., PUR. INV., ITEM, MRP, GST%, QTY., FREE, 
+SLN., PUR. INV., ITEM, MRP, GST%, QTY., FREE, UNIT NET RATE, 
 RATE, GROSS, CD AMT., CGST AMT., SGST AMT., AMOUNT
 */
-
+  ITM DISC. | => 13
 				// BILL PRINT COLUMNS
                 // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
                 //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
-
+				
+				// BILL PRINT COLUMNS (NEW)
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
+13-
 // Table CompanyMaster, no. of columns - 4
 // compid, compnm, compabbr, isactive
 
@@ -89,6 +93,6 @@ SLN., RETAILER, INVOICE NO., INVOICE DATE, COMPANY, PRODUCT, HSN, MRP., QTY.,
 NET MRP., TAXABLE AMT., GST %, CGST AMT., SGST AMT., LANDING PRICE
 */
 
-// Item Stock Re3port - 7 Cloumns
+// Item Stock Report - 7 Cloumns
 // SLN., COMPANY, ITEM, HSN, MRP, GST %, QTY ONHAND
 

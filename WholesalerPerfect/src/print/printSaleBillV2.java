@@ -309,12 +309,12 @@ public class printSaleBillV2 {
             g2d.drawString(titleText, (int) titleX, (int) titleY);
             
             // _117
-            titleText = "SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.";
+            titleText = "SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.";
             titleX = leftbound;
             titleY+=11;
             g2d.drawString(titleText, (int) titleX, (int) titleY);
             
-            titleText = "  |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|";
+            titleText = "   |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|";
             titleX = leftbound;
             titleY+=11;
             g2d.drawString(titleText, (int) titleX, (int) titleY);
@@ -366,21 +366,21 @@ public class printSaleBillV2 {
                     }
                 }
                 
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
-                // SN
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN
                 titleX = leftbound;
-                titleText = sln+spaceCompute(String.valueOf(sln).length(),2)+"|";
+                titleText = sln+spaceCompute(String.valueOf(sln).length(),3)+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // DESCRIPTION
                 titleX = titleX+fontMetrics.stringWidth(titleText);
-                titleText = itemnm+spaceCompute(itemnm.length(),23)+"|";
+                titleText = itemnm+spaceCompute(itemnm.length(),32)+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // MRP
                 titleX = titleX+fontMetrics.stringWidth(titleText);
-                titleText = mrp+spaceCompute(mrp.length(),4)+"|";
+                titleText = mrp+spaceCompute(mrp.length(),5)+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // HSN
@@ -388,18 +388,18 @@ public class printSaleBillV2 {
                 titleText = hsn+spaceCompute(hsn.length(),8)+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
-                // QTY
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
+                // QTY.
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String sqty = format.format(Double.parseDouble(ss.getQty()));
-                titleText = spaceCompute(sqty.length(),3)+sqty+"|";
+                titleText = spaceCompute(sqty.length(),4)+sqty+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
-                // FRE
+                // FREE
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String sfree = format.format(Double.parseDouble(ss.getFree()));
-                titleText = spaceCompute(sfree.length(),3)+sfree+"|";
+                titleText = spaceCompute(sfree.length(),4)+sfree+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // RATE
@@ -408,20 +408,19 @@ public class printSaleBillV2 {
                 titleText = spaceCompute(srate.length(),8)+srate+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
                 // ITM DISC %
-                titleX = titleX+fontMetrics.stringWidth(titleText);
-                String itemdiscper = Double.parseDouble(ss.getItemdiscper())>0?format.format(Double.parseDouble(ss.getItemdiscper())):"0";
-                titleText = spaceCompute(itemdiscper.length(),3)+itemdiscper+"|";
-                g2d.drawString(titleText, (int) titleX, (int) titleY);
+//                titleX = titleX+fontMetrics.stringWidth(titleText);
+//                String itemdiscper = Double.parseDouble(ss.getItemdiscper())>0?format.format(Double.parseDouble(ss.getItemdiscper())):"0";
+//                titleText = spaceCompute(itemdiscper.length(),3)+itemdiscper+"|";
+//                g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // ITM DISC.
-                titleX = titleX+fontMetrics.stringWidth(titleText);
-//                String sitemdisc = Double.parseDouble(ss.getItemdiscamt())>0?("-"+MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getItemdiscamt()))):"0";
-                String sitemdisc = Double.parseDouble(ss.getItemdiscamt())>0?MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getItemdiscamt())):"0";
-                titleText = spaceCompute(sitemdisc.length(),8)+sitemdisc+"|";
-                g2d.drawString(titleText, (int) titleX, (int) titleY);
+//                titleX = titleX+fontMetrics.stringWidth(titleText);
+//                String sitemdisc = Double.parseDouble(ss.getItemdiscamt())>0?MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getItemdiscamt())):"0";
+//                titleText = spaceCompute(sitemdisc.length(),8)+sitemdisc+"|";
+//                g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // CD DISC.
                 titleX = titleX+fontMetrics.stringWidth(titleText);
@@ -435,43 +434,43 @@ public class printSaleBillV2 {
                 double each_gst_amt = Double.parseDouble(ss.getGstamt()) / 2.0;
                 
                 // CGST %
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String scgstper = format.format(each_gst_per);
                 titleText = spaceCompute(scgstper.length(),3)+scgstper+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // CGST AMT.
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String scgstamt = MyNumberFormat.rupeeFormat(each_gst_amt);
                 titleText = spaceCompute(scgstamt.length(),8)+scgstamt+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // SGST %
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String ssgstper = format.format(each_gst_per);
                 titleText = spaceCompute(ssgstper.length(),3)+ssgstper+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // SGST AMT.
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String ssgstamt = MyNumberFormat.rupeeFormat(each_gst_amt);
                 titleText = spaceCompute(ssgstamt.length(),8)+ssgstamt+"|";
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // GROSS AMT.
-                // SN|      DESCRIPTION      | MRP|   HSN  |QTY|FRE|    RATE|  ITM DISC. | CD DISC.|    CGST    |    SGST    |GROSS AMT.
-                //   |                       |    |        |   |   |        |  %|    AMT.|     AMT.|  %|    AMT.|  %|    AMT.|
+                // SLN|           DESCRIPTION          | MRP |   HSN  |QTY.|FREE|    RATE| CD DISC.|    CGST    |    SGST    | GROSS AMT.
+                //    |                                |     |        |    |    |        |     AMT.|  %|    AMT.|  %|    AMT.|
                 titleX = titleX+fontMetrics.stringWidth(titleText);
                 String stotal = MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getGross()));
-                titleText = spaceCompute(stotal.length(),10)+stotal                      ;
+                titleText = spaceCompute(stotal.length(),11)+stotal                      ;
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
             }
             for (int i = 1; i < noofrecStartnend - lineNo; i++) {
@@ -497,10 +496,10 @@ public class printSaleBillV2 {
                 int s=(int)((subtotal-m)*100.0);
                 String amtinword = "";
                 if(s==0) {
-                    amtinword = "TOTAL VALUE (IN WORD): " + nts.numberToString(m).toUpperCase() + "Only.";
+                    amtinword = "TOTAL VALUE (IN WORD): " + nts.numberToString(m).toUpperCase() + "ONLY.";
                 } else {
-                    amtinword = "TOTAL VALUE (IN WORD): " + nts.numberToString(m).toUpperCase() + "and " 
-                            + nts.numberToString(s).toUpperCase() + "Paise Only.";
+                    amtinword = "TOTAL VALUE (IN WORD): " + nts.numberToString(m).toUpperCase() + "AND " 
+                            + nts.numberToString(s).toUpperCase() + "PAISE ONLY.";
                 }
                 g2d.drawString(amtinword, (int) titleX, (int) titleY);
                 
@@ -524,17 +523,12 @@ public class printSaleBillV2 {
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // ITEM DISC. AMT.
-                titleText = "ITEM DISC. AMT."+spaceCompute("ITEM DISC. AMT.".length(),16)+":-";
-                titleX = rightbound-middleBound+90;
-                g2d.drawString(titleText, (int) titleX, (int) titleY);
-                titleText = "-"+MyNumberFormat.rupeeFormat(Double.parseDouble(sm.getNetitemdiscamt()));
-                titleX = rightbound - fontMetrics.stringWidth(titleText) + 5;
-                g2d.drawString(titleText, (int) titleX, (int) titleY);
-                
-                titleText = "REMARKS: "+(sm.getRemarks().equals("N/A")?"":sm.getRemarks());
-                titleX = leftbound;
-                titleY += 10.5;
-                g2d.drawString(titleText, (int) titleX, (int) titleY);
+//                titleText = "ITEM DISC. AMT."+spaceCompute("ITEM DISC. AMT.".length(),16)+":-";
+//                titleX = rightbound-middleBound+90;
+//                g2d.drawString(titleText, (int) titleX, (int) titleY);
+//                titleText = "-"+MyNumberFormat.rupeeFormat(Double.parseDouble(sm.getNetitemdiscamt()));
+//                titleX = rightbound - fontMetrics.stringWidth(titleText) + 5;
+//                g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
                 // CD % AND CD AMT.
                 titleText = "CD: "+format.format(Double.parseDouble(sm.getCashdiscper()))+"% AMT."
@@ -545,10 +539,15 @@ public class printSaleBillV2 {
                 titleX = rightbound - fontMetrics.stringWidth(titleText) + 5;
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 
+                titleText = "REMARKS: "+(sm.getRemarks().equals("N/A")?"":sm.getRemarks());
+                titleX = leftbound;
+                titleY += 10.5;
+                g2d.drawString(titleText, (int) titleX, (int) titleY);
+                
                 // GST AMT.
                 titleText = "GST AMT."+spaceCompute("GST AMT.".length(),16)+":-";
                 titleX = rightbound-middleBound+90;
-                titleY += 10.5;
+//                titleY += 10.5;
                 g2d.drawString(titleText, (int) titleX, (int) titleY);
                 titleText = "+"+MyNumberFormat.rupeeFormat(Double.parseDouble(sm.getNetgstamt()));
                 titleX = rightbound - fontMetrics.stringWidth(titleText) + 5;

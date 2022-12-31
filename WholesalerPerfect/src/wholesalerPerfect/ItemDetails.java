@@ -133,17 +133,9 @@ public class ItemDetails extends javax.swing.JInternalFrame {
         jTabbedPane1.setMnemonicAt(1, KeyEvent.VK_L);
         jTabbedPane1.setMnemonicAt(2, KeyEvent.VK_D);
    
-        SwingUtilities.invokeLater
-        (
-            new Runnable() 
-            {
-                @Override
-                public void run() 
-                {
-                    jComboBox2.requestFocusInWindow();
-                }
-            }
-        );
+        SwingUtilities.invokeLater (() -> {
+            jComboBox2.requestFocusInWindow();
+        });
     }
     
     public String getNewItemDetails()

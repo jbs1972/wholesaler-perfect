@@ -247,10 +247,10 @@ public class DailyDispatchReport extends javax.swing.JInternalFrame implements A
         supplydt, totnoofitems, netgross, netitemdiscamt, netgstamt, cashdiscper, netcashdiscamt, 
         netamt, roundoff, dispscheme, netpayableamt, amtpaid, isactive, remarks
         */
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         String query="select compnm, itemnm, hsn, mrp, gst, sexgst, singst, sum(qty+free) as sumqty "
                 + "from (select compid, compnm from CompanyMaster where isactive=1) a, (select itemmid, "
