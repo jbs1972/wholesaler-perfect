@@ -1,5 +1,5 @@
 package utilities;
-
+import java.math.*;
 public class RoundOff {
     public static String roundOff01(String ori)
     {
@@ -63,9 +63,17 @@ public class RoundOff {
         return (float)tmp/p;
     }
     
+    public static double roundToAnyDecimalPlace(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+    
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+    
     public static void main(String args[]) {
-        String ori = "500.51";
-        String result = roundOff01(ori);
+        double ori = 458.6298;
+        double result = roundToAnyDecimalPlace(ori, 2);
         System.out.println("Original= "+ori+" Result= "+result);
     }
 }

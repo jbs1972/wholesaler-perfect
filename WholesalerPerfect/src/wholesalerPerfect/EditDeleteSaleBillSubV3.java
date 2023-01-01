@@ -43,12 +43,12 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import print.printSaleBillV2;
 import query.Query;
-import utilities.Add0Padding6;
 import utilities.DateConverter;
 import utilities.MyNumberFormat;
 import utilities.Settings;
+import utilities.RoundOff;
+import static utilities.RoundOff.roundToAnyDecimalPlace;
 
 public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implements AWTEventListener {
 
@@ -587,10 +587,10 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         String retqty = "0";
         
         SaleSubV2 ss = new SaleSubV2();
-        // Table SaleSubV2, no. of columns - 16
+        // Table SaleSubV2, no. of columns - 17
         /*
-        salesid, salemid, psid, itemdid, mrp, gst, qty, free, rate, gross, itemdiscper, 
-        itemdiscamt, cashdiscamt, gstamt, amount, retqty
+        salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+        gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
         */
         ss.setSalesid(""); // At Insert
         ss.setSalemid(""); // At Insert
@@ -1119,56 +1119,41 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         }
     }
     
-//    private void formFlush() {
-//        newRetnm = null;
-//        currentItemmid = null;
-//        currentItemdid = null;
-//        currentPsidWithItemDetails = null;
-//        currentPsid = null;
-//        ssAl = new ArrayList<SaleSubV2>();
-//        avlqty = 0;
-//        sm = null;
-//        currentGstAmt = null;
-//        
-//        jLabel42.setText("N/A");
-//        jDateChooser1.setDate(new Date());
-//        jTextField1.setText("N/A");
-//        String sDate1="01/01/2000";  
-//        Date date1=null;
-//        try {
-//            date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
-//        } catch (ParseException ex) {
-//            ex.printStackTrace();
-//            JOptionPane.showMessageDialog(null,"SaleV2 ex: "+ex.getMessage(),
-//                    "Error Found",JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//        jDateChooser2.setDate(date1);
-//        jComboBox2.setSelectedIndex(0);
-//        jLabel6.setText("N/A");
-//        jLabel8.setText("N/A");
-//        jTextField2.setText("N/A");
-//        jTextField3.setText("N/A");
-//        jTextField4.setText("N/A");
-//        jTextField5.setText("N/A");
-//        jDateChooser3.setDate(date1);
-//        jTextField6.setText("0");
-//        
-//        clearTable(jTable1);
-//        jComboBox3.removeAllItems();
-//        innerFormFlush();
-//        jLabel39.setText("0");
-//        jLabel41.setText("0");
-//        jLabel45.setText("0");
-//        jLabel47.setText("0");
-//        jLabel49.setText("0");
-//        jTextField11.setText("0");
-//        jTextField12.setText("0");
-//        jLabel53.setText("0");
-//        jTextField13.setText("N/A");
-//        
-//        jDateChooser1.requestFocusInWindow();
-//    }
+    private void onCdChanged(java.awt.event.KeyEvent evt) {
+        // First to check if any item in the ADD item panel
+        if(!ssAl.isEmpty()) {
+            int i = 0;
+            for(SaleSubV2 ss : ssAl) {
+                // Table SaleSubV2, no. of columns - 17
+                /*
+                salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+                gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
+                */
+                int qty = Integer.parseInt(ss.getQty());
+                double unitNetRate = Double.parseDouble(ss.getUnitnetrate()); //*
+                double cashDiscper = Double.parseDouble(jTextField6.getText());
+                double calculatedCashDiscper = (1-(cashDiscper / 100.0)); //*
+                double gstper = Double.parseDouble(ss.getGst());
+                double calculatedGstper = (1 + (gstper / 100.0)); //*
+                // Actual Rate Calculation
+                double rate = unitNetRate / (calculatedCashDiscper * calculatedGstper);
+                double gross = rate * qty;
+                double cashDiscamt = gross * (cashDiscper / 100.0);
+                double amtAfterCashDisc = gross - cashDiscamt;
+                double gstamt = amtAfterCashDisc * (gstper / 100.0);
+                double amount = amtAfterCashDisc + gstamt;
+
+                ss.setRate(String.valueOf(roundToAnyDecimalPlace(rate, 2)));
+                ss.setGross(String.valueOf(roundToAnyDecimalPlace(gross, 2)));
+                ss.setCashdiscamt(String.valueOf(roundToAnyDecimalPlace(cashDiscamt, 2)));
+                ss.setGstamt(String.valueOf(roundToAnyDecimalPlace(gstamt, 2)));
+                ss.setAmount(String.valueOf(roundToAnyDecimalPlace(amount, 2)));
+//                ssAl.remove(i);
+//                ssAl.add(ss);
+                Fetch();
+            }
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -1451,6 +1436,9 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         jTextField6.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField6KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField6KeyReleased(evt);
             }
         });
 
@@ -2645,6 +2633,16 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
             }
         }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jTextField6KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField6KeyReleased
+        // If the CD % is changed then it will impact over all items.
+        if(currentItemdid != null) {
+            JOptionPane.showMessageDialog(null,"Unable to Edit Sale Bill",
+                    "Edit Error",JOptionPane.ERROR);
+            evt.consume();
+        }
+        onCdChanged(evt);
+    }//GEN-LAST:event_jTextField6KeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
