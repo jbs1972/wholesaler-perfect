@@ -960,7 +960,6 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                 PreparedStatement psmt3 = null;
                 PreparedStatement psmt4 = null;
                 PreparedStatement psmt5 = null;
-                PreparedStatement psmt6 = null;
 
                 // Number of columns in ItemLedger: 9
                 /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
@@ -997,12 +996,6 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                     */
                     String sql4 = "update PurchaseSubV2 set qtysold=qtysold+? where psid=?";
                     psmt4 = conn.prepareStatement(sql4);
-                    // Table PurchaseSubV2, no. of columns - 12
-                    /*
-                    psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
-                    */
-                    String sql6 = "update PurchaseSubV2 set qtysold=qtysold-? where psid=?";
-                    psmt6 = conn.prepareStatement(sql6);
                     for( SaleSubV2 ref : sm.getSsAl() )
                     {
                         psmt1.setInt(1, Integer.parseInt(ref.getItemdid()));
@@ -1029,15 +1022,10 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                         psmt4.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                         psmt4.setInt(2, Integer.parseInt(ref.getPsid()));
                         psmt4.addBatch();
-                        
-                        psmt6.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
-                        psmt6.setInt(2, Integer.parseInt(ref.getPsid()));
-                        psmt6.addBatch();
                     }
                     psmt2.executeBatch();
                     psmt3.executeBatch();
                     psmt4.executeBatch();
-                    psmt6.executeBatch();
 
                     // Number of columns in SalePaymentRegister: 7
                     /* sprid, pknm, pkval, actiondt, refno, type, amount */
@@ -1095,13 +1083,6 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                     if (psmt5 != null) {
                         try {
                             psmt5.close();
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    if (psmt6 != null) {
-                        try {
-                            psmt6.close();
                         } catch (SQLException ex) {
                             ex.printStackTrace();
                         }

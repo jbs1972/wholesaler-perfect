@@ -750,6 +750,7 @@ public class Query {
         PreparedStatement psmt3 = null;
         PreparedStatement psmt4 = null;
         PreparedStatement psmt5 = null;
+        PreparedStatement psmt6 = null;
 
         // Table SaleMasterV2, no. of columns - 24
         /*
@@ -775,6 +776,11 @@ public class Query {
         /* sprid, pknm, pkval, actiondt, refno, type, amount */
         String deleteSQL4 = "DELETE FROM SalePaymentRegister WHERE pknm='salemid' AND pkval=?"
                 + " AND actiondt=? AND type=0";
+        // Table PurchaseSubV2, no. of columns - 12
+        /*
+        psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
+        */
+        String updaetSQL2 = "update PurchaseSubV2 set qtysold=qtysold-? where psid=?";
         try {
             conn.setAutoCommit(false);
             
@@ -784,6 +790,7 @@ public class Query {
             psmt3 = conn.prepareStatement(deleteSQL1);
             psmt4 = conn.prepareStatement(deleteSQL2);
             psmt5 = conn.prepareStatement(deleteSQL4);
+            psmt6 = conn.prepareStatement(updaetSQL2);
             
             for(SaleSubV2 ref : sm.getSsAl()) {
                 psmt1.setInt(1, Integer.parseInt(ref.getQty()));
@@ -798,9 +805,14 @@ public class Query {
                 System.out.println("========invdt===========>"+sm.getSaledt());
                 System.out.println("========modified invdt===========>"+DateConverter.dateConverter1(sm.getSaledt()));
                 psmt2.addBatch();
+                
+                psmt6.setInt(1, Integer.parseInt(ref.getQty()));
+                psmt6.setInt(2, Integer.parseInt(ref.getItemdid()));
+                psmt6.addBatch();
             }
             psmt1.executeBatch();
             psmt2.executeBatch();
+            psmt6.executeBatch();
             
             psmt3.setString(1, sm.getSalemid());
             psmt3.executeUpdate();
@@ -854,6 +866,13 @@ public class Query {
             if (psmt5 != null) {
                 try {
                     psmt5.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (psmt6 != null) {
+                try {
+                    psmt6.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
