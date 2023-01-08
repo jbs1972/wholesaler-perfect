@@ -54,6 +54,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
 
     private JDesktopPane jDesktopPane1;
     private UserProfile up;
+    private boolean soldFlag;
     private Settings settings=new Settings();
     private DecimalFormat format = new DecimalFormat("0.#");
     private Query q=new Query();
@@ -74,13 +75,14 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
     private String currentCompid;
     
     public EditDeletePurchaseSubV2(JDesktopPane jDesktopPane1, UserProfile up, 
-            PurchaseMasterV2 pm, boolean isFromOtherWindow) {
+            PurchaseMasterV2 pm, boolean isFromOtherWindow, boolean soldFlag) {
         super("Edit/Delete Purchase",false,true,false,true);
         initComponents();
         this.jDesktopPane1 = jDesktopPane1;
         this.up = up;
         this.oldPm = q.getPurchaseMasterV2(pm.getPmid());
         this.isFromOtherWindow = isFromOtherWindow;
+        this.soldFlag = soldFlag;
         Dimension d=getSize();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(((int) dim.getWidth() - (int)d.getWidth())/2,((int) dim.getHeight() - (int)d.getHeight())/2-43);
@@ -124,6 +126,13 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
         
         populateCombo2();
         populateData();
+        
+        // The following buttons are disabled when item is sold from the Purchase Bill
+        if(soldFlag) {
+            jButton1.setEnabled(false); // Add To List Button
+            jButton2.setEnabled(false); // Update Button
+            jButton3.setEnabled(false); // Delete Button
+        }
         
         SwingUtilities.invokeLater
         (() -> {

@@ -3,6 +3,7 @@ package wholesalerPerfect;
 import com.toedter.calendar.JTextFieldDateEditor;
 import conn.dBConnection;
 import dto.PurchaseMasterV2;
+import dto.PurchaseSubV2;
 import dto.UserProfile;
 import java.awt.AWTEvent;
 import java.awt.Color;
@@ -19,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
@@ -209,8 +211,7 @@ public class EditDeletePurchase extends javax.swing.JInternalFrame implements AW
         */
         String sql = "select a.pmid, a.invno, a.invdt, b.compnm, c.ssnm, a.netpayableamt "
                 + "from (select"+d+" pmid, invno, invdt, compid, ssid, netpayableamt "
-                + "from PurchaseMasterV2 where isactive=1 and pmid not in (select distinct pmid "
-                + "from PurchaseSubV2 where qtysold<>0)"+x+y+b+") a, (select compid, compnm "
+                + "from PurchaseMasterV2 where isactive=1"+x+y+b+") a, (select compid, compnm "
                 + "from CompanyMaster where isactive=1) b, (select ssid, ssnm from SuperStockistMaster "
                 + "where isactive=1"+c+") c where a.compid=b.compid and a.ssid=c.ssid order by a.invdt desc";
         System.out.println(sql);
@@ -318,17 +319,22 @@ public class EditDeletePurchase extends javax.swing.JInternalFrame implements AW
                     "Invalid row selection",JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int selectedrow = jTable1.getSelectedRow();
+        if ( selectedrow == 0 || selectedrow == jTable1.getRowCount()-1 ) {
+            return;
+        }
         Thread t = new Thread(() -> {
             try {
                 setVisible(false);
-                int selectedrow = jTable1.getSelectedRow();
-                if ( selectedrow == 0 || selectedrow == jTable1.getRowCount()-1 ) {
-                    return;
-                }
                 PurchaseMasterV2 pm = q.getPurchaseMasterV2(pmidArray[selectedrow-1]);
-                // EditDeletePurchaseSub(JDesktopPane jDesktopPane1, UserProfile up)
-                // final EditDeletePurchaseSub ref=new EditDeletePurchaseSub(jDesktopPane, up, pm);
-                final EditDeletePurchaseSubV2 ref=new EditDeletePurchaseSubV2(jDesktopPane, up, pm, false);
+                ArrayList <PurchaseSubV2>psAl = pm.getPsAl();
+                boolean soldFlag = false;
+                for(PurchaseSubV2 ps : psAl) {
+                    if(Integer.parseInt(ps.getQtysold()) > 0) {
+                        soldFlag = true;
+                    }
+                }
+                final EditDeletePurchaseSubV2 ref=new EditDeletePurchaseSubV2(jDesktopPane, up, pm, false, soldFlag);
                 ref.addInternalFrameListener(new InternalFrameAdapter() {
                     @Override
                     public void internalFrameClosed(InternalFrameEvent e) {
