@@ -118,8 +118,8 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
     private void Fetch() {
         int totavlqty = 0;
         clearTable(jTable1);
-        // NO. OF TABLE HEADERS: 10
-        /* SLN., INV. NO., INV. DATE, AVL. QTY., MRP, GST, PUR EX-GST, PUR IN-GST, SALE EX-GST, SALE IN-GST  */
+        // NO. OF TABLE HEADERS: 11
+        /* SLN., INV. NO., INV. DATE, AVL. QTY., MRP, GST, PUR EX-GST, PUR IN-GST, ITEM DISC%, SALE EX-GST, SALE IN-GST  */
         // Table PurchaseMasterV2, no. of columns - 20
         /*
         pmid, ssid, compid, invno, invdt, netqty, netitemdisc, netgross, tradediscper, nettradediscamt, 
@@ -134,11 +134,11 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
         /* itemmid, compid, itemnm, hsn, isactive */
         // Number of columns in ItemDetails: 10
         /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
-        String query = "select psid, b.itemdid, invno, invdt, avlqty, mrp, gst, pexgst, pingst, sexgst, singst from "
-                + "(select pmid, invno, invdt from PurchaseMasterV2 where isactive=1) a, (select psid, pmid, itemdid, "
-                + "qty-(qtysold+retqty) as avlqty from PurchaseSubV2 where qty-(qtysold+retqty)>0) b, (select itemdid, "
-                + "mrp, gst, pexgst, pingst, sexgst, singst from ItemDetails where isactive=1 and itemmid="
-                + this.itemmid+") c where a.pmid=b.pmid and b.itemdid=c.itemdid order by invdt";
+        String query = "select psid, b.itemdid, invno, invdt, avlqty, mrp, gst, pexgst, pingst, discper, sexgst, singst from "
+                + "(select pmid, invno, invdt from PurchaseMasterV2 where isactive=1) a, (select psid, pmid, "
+                + "itemdid, discper, qty-(qtysold+retqty) as avlqty from PurchaseSubV2 where qty-(qtysold+retqty)>0) b, "
+                + "(select itemdid, mrp, gst, pexgst, pingst, sexgst, singst from ItemDetails where isactive=1 "
+                + "and itemmid="+this.itemmid+") c where a.pmid=b.pmid and b.itemdid=c.itemdid order by invdt";
         System.out.println(query);
         dBConnection db=new dBConnection();
         Connection conn=db.setConnection();
@@ -187,6 +187,7 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
                     row.addElement(pexgst);
                     pingst = MyNumberFormat.rupeeFormat(Double.parseDouble(rs.getString("pingst")));
                     row.addElement(pingst);
+                    row.addElement(format.format(Double.parseDouble(rs.getString("discper"))));
                     sexgst = MyNumberFormat.rupeeFormat(Double.parseDouble(rs.getString("sexgst")));
                     row.addElement(sexgst);
                     singst = MyNumberFormat.rupeeFormat(Double.parseDouble(rs.getString("singst")));
@@ -213,8 +214,8 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
         jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         JTableHeader header = jTable1.getTableHeader();
         header.setBackground(Color.cyan);
-        // NO. OF TABLE HEADERS: 10
-        /* SLN., INV. NO., INV. DATE, AVL. QTY., MRP, GST, PUR EX-GST, PUR IN-GST, SALE EX-GST, SALE IN-GST  */
+        // NO. OF TABLE HEADERS: 11
+        /* SLN., INV. NO., INV. DATE, AVL. QTY., MRP, GST, PUR EX-GST, PUR IN-GST, ITEM DISC%, SALE EX-GST, SALE IN-GST  */
         jTable1.getColumnModel().getColumn(0).setMinWidth(0);// SLN
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(60);
         jTable1.getColumnModel().getColumn(1).setMinWidth(0);// INV. NO.
@@ -231,10 +232,12 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
         jTable1.getColumnModel().getColumn(6).setPreferredWidth(100);
         jTable1.getColumnModel().getColumn(7).setMinWidth(0);// PUR IN-GST
         jTable1.getColumnModel().getColumn(7).setPreferredWidth(100);
-        jTable1.getColumnModel().getColumn(8).setMinWidth(0);// SALE EX-GST
+        jTable1.getColumnModel().getColumn(8).setMinWidth(0);// ITEM DISC%
         jTable1.getColumnModel().getColumn(8).setPreferredWidth(100);
-        jTable1.getColumnModel().getColumn(9).setMinWidth(0);// SALE IN-GST
+        jTable1.getColumnModel().getColumn(9).setMinWidth(0);// SALE EX-GST
         jTable1.getColumnModel().getColumn(9).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(10).setMinWidth(0);// SALE IN-GST
+        jTable1.getColumnModel().getColumn(10).setPreferredWidth(100);
         
         // align funda
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -242,13 +245,14 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
         jTable1.getColumn("SLN.").setCellRenderer( centerRenderer );
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(DefaultTableCellRenderer.RIGHT);
-        // NO. OF TABLE HEADERS: 10
-        /* SLN., INV. NO., INV. DATE, AVL. QTY., MRP, GST, PUR EX-GST, PUR IN-GST, SALE EX-GST, SALE IN-GST  */
+        // NO. OF TABLE HEADERS: 11
+        /* SLN., INV. NO., INV. DATE, AVL. QTY., MRP, GST, PUR EX-GST, PUR IN-GST, ITEM DISC%, SALE EX-GST, SALE IN-GST  */
         jTable1.getColumn("AVL. QTY.").setCellRenderer( rightRenderer );
         jTable1.getColumn("MRP").setCellRenderer( rightRenderer );
         jTable1.getColumn("GST").setCellRenderer( rightRenderer );
         jTable1.getColumn("PUR EX-GST").setCellRenderer( rightRenderer );
         jTable1.getColumn("PUR IN-GST").setCellRenderer( rightRenderer );
+        jTable1.getColumn("ITEM DISC%").setCellRenderer( rightRenderer );
         jTable1.getColumn("SALE EX-GST").setCellRenderer( rightRenderer );
         jTable1.getColumn("SALE IN-GST").setCellRenderer( rightRenderer );
         
@@ -340,14 +344,14 @@ public class ItemDetails4Sale extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "SLN.", "INV. NO.", "INV. DATE", "AVL. QTY.", "MRP", "GST", "PUR EX-GST", "PUR IN-GST", "SALE EX-GST", "SALE IN-GST"
+                "SLN.", "INV. NO.", "INV. DATE", "AVL. QTY.", "MRP", "GST", "PUR EX-GST", "PUR IN-GST", "ITEM DISC%", "SALE EX-GST", "SALE IN-GST"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
