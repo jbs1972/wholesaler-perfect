@@ -626,7 +626,7 @@ public class Query {
         // Number of columns in ItemLedger: 9
         /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
         String deleteSQL3 = "DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='PurchaseSub'"
-                + " AND pknm='psid' AND pkval=? AND actiondt=? AND type='LESS'";        
+                + " AND pknm='psid' AND pkval=? AND actiondt=? AND type='ADD'";        
         // Number of columns in PurchasePaymentRegister: 7
         /* pprid, pknm, pkval, actiondt, refno, type, amount */
         String deleteSQL4 = "DELETE FROM PurchasePaymentRegister WHERE pknm='pmid' AND pkval=?"
@@ -771,7 +771,7 @@ public class Query {
         // Number of columns in ItemLedger: 9
         /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
         String deleteSQL3 = "DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='SaleSubV2'"
-                + " AND pknm='salesid' AND pkval=? AND actiondt=? AND type='ADD'";        
+                + " AND pknm='salesid' AND pkval=? AND actiondt=? AND type='LESS'";        
         // Number of columns in SalePaymentRegister: 7
         /* sprid, pknm, pkval, actiondt, refno, type, amount */
         String deleteSQL4 = "DELETE FROM SalePaymentRegister WHERE pknm='salemid' AND pkval=?"
@@ -797,17 +797,18 @@ public class Query {
                 psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
                 psmt1.addBatch();
                 
+                // DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='SaleSubV2'"+" AND pknm='salesid' AND pkval=? AND actiondt=? AND type='LESS'
                 psmt2.setInt(1, Integer.parseInt(ref.getItemdid()));
                 System.out.println("========itemdid===========>"+ref.getItemdid());
-                psmt2.setString(2, ref.getPsid());
-                System.out.println("========psid===========>"+ref.getSalesid());
+                psmt2.setString(2, ref.getSalesid());
+                System.out.println("========ssid===========>"+ref.getSalesid());
                 psmt2.setDate(3, java.sql.Date.valueOf(DateConverter.dateConverter1(sm.getSaledt())));
                 System.out.println("========invdt===========>"+sm.getSaledt());
                 System.out.println("========modified invdt===========>"+DateConverter.dateConverter1(sm.getSaledt()));
                 psmt2.addBatch();
                 
                 psmt6.setInt(1, Integer.parseInt(ref.getQty()));
-                psmt6.setInt(2, Integer.parseInt(ref.getItemdid()));
+                psmt6.setInt(2, Integer.parseInt(ref.getPsid()));
                 psmt6.addBatch();
             }
             psmt1.executeBatch();

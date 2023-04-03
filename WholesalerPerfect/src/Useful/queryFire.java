@@ -34,10 +34,13 @@ public class queryFire
 
         // ########### Removing Purchase effects--------------------------------
 //        String query = "delete from SaleMasterV2";
-//        String query = "delete from SaleSubV2";
+        String query = "delete from SaleSubV2";
 //        String query = "update ItemDetails set onhand=0";
-        String query = "delete from ItemLedger";
+//        String query = "delete from ItemLedger";
 //        String query = "update SaleSubV2 set unitnetrate=rate";
+
+//        String query = "update PurchaseSubV2 set qtysold=0 where pmid=1";
+//        String query = "update ItemDetails set qtysold=0 where pmid=1";
         System.out.println(query);
         try {
             Statement smt=conn.createStatement();
