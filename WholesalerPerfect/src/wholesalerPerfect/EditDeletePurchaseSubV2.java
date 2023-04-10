@@ -27,8 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
@@ -67,7 +65,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
     private double tradeDiscPer;
     private double replacementDiscPer;
     private ArrayList<PurchaseSubV2> psAl;
-    private ArrayList<PurchaseGSTV2> pgstAl = null;
+    private ArrayList<PurchaseGSTV2> pgstAl;
     private String currentItemmid;
     private String newItemDetails;
     private String selectedItemDetails;
@@ -209,7 +207,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
         tradeDiscPer = Double.parseDouble(oldPm.getTradediscper());
         jTextField3.setText(format2afterDecimal.format(Double.parseDouble(oldPm.getReplacementdiscper())));
         replacementDiscPer = Double.parseDouble(oldPm.getReplacementdiscper());
-        psAl = oldPm.getPsAl();
+        psAl = q.getAllPurchaseSubV2(oldPm.getPmid());
         jTextField8.setText(format2afterDecimal.format(Double.parseDouble(oldPm.getRoundoff())));
         jTextField9.setText(format2afterDecimal.format(Double.parseDouble(oldPm.getDispscheme())));
         currentCompid = oldPm.getCompid();
@@ -839,7 +837,6 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                 try {
                     conn.setAutoCommit(false);
 
-                    String pervqty = null;
                     // Number of columns in ItemDetails: 10
                     /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
                     String sql1 = "select onhand from ItemDetails where itemdid=?";
@@ -856,13 +853,17 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                     String sql3 = "insert into ItemLedger (ilid, itemdid, tablenm, pknm, pkval, actiondt, "
                             + "type, prevqty, qty) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     psmt3 = conn.prepareStatement(sql3);
+                    String prev_arr[] = new String[pm.getPsAl().size()];
+                    int i = 0;
                     for( PurchaseSubV2 ref : pm.getPsAl() ) {
                         psmt1.setInt(1, Integer.parseInt(ref.getItemdid()));
                         ResultSet rs = psmt1.executeQuery();
                         if(rs.next()) {
-                            pervqty = rs.getString("onhand");
+                            prev_arr[i++] = rs.getString("onhand");
                         }
-
+                    }
+                    i = 0;
+                    for( PurchaseSubV2 ref : pm.getPsAl() ) {
                         psmt2.setInt(1, Integer.parseInt(ref.getQty()));
                         psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
                         psmt2.addBatch();
@@ -874,7 +875,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                         psmt3.setString(5, ref.getPsid());
                         psmt3.setDate(6, java.sql.Date.valueOf(DateConverter.dateConverter1(invdt)));
                         psmt3.setString(7, "ADD");
-                        psmt3.setInt(8, Integer.parseInt(pervqty));
+                        psmt3.setInt(8, Integer.parseInt(prev_arr[i++]));
                         psmt3.setInt(9, Integer.parseInt(ref.getQty()));
                         psmt3.addBatch();
                     }
@@ -955,7 +956,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
         currentCompid = null;
         tradeDiscPer = 0.0;
         replacementDiscPer = 0.0;
-        psAl = new ArrayList<PurchaseSubV2>();
+        psAl = null;
         pgstAl = null;
         
         jLabel1.setText("N/A");

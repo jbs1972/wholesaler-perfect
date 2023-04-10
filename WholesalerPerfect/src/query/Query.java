@@ -625,7 +625,7 @@ public class Query {
         String updaetSQL1 = "UPDATE ItemDetails SET onhand=onhand-? WHERE itemdid=?";
         // Number of columns in ItemLedger: 9
         /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
-        String deleteSQL3 = "DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='PurchaseSub'"
+        String deleteSQL3 = "DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='PurchaseSubv2'"
                 + " AND pknm='psid' AND pkval=? AND actiondt=? AND type='ADD'";        
         // Number of columns in PurchasePaymentRegister: 7
         /* pprid, pknm, pkval, actiondt, refno, type, amount */
@@ -1053,6 +1053,88 @@ public class Query {
             }
         }
         return ps;
+    }
+    
+    public ArrayList<PurchaseSubV2> getAllPurchaseSubV2( String pmid ) {
+        ArrayList<PurchaseSubV2> alPsv2 = new ArrayList<>();
+        dBConnection db=new dBConnection();
+        Connection conn=db.setConnection();
+        try {
+            Statement smt=conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            String query="select psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, "
+                    + "amount, qtysold, retqty from PurchaseSubV2 where pmid="+pmid; 
+            ResultSet rs=smt.executeQuery(query);
+            while(rs.next()) {    
+                PurchaseSubV2 psv2 = new PurchaseSubV2();
+                // Table PurchaseSubV2, no. of columns - 12
+                /*
+                psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
+                */
+                psv2.setPsid(rs.getString("psid"));
+                psv2.setPmid(rs.getString("pmid"));
+                psv2.setItemdid(rs.getString("itemdid"));
+                psv2.setMrp(rs.getString("mrp"));
+                psv2.setGst(rs.getString("gst"));
+                psv2.setQty(rs.getString("qty"));
+                psv2.setRate(rs.getString("rate"));
+                psv2.setDiscper(rs.getString("discper"));
+                psv2.setDiscamt(rs.getString("discamt"));
+                psv2.setAmount(rs.getString("amount"));
+                psv2.setQtysold(rs.getString("qtysold"));
+                psv2.setRetqty(rs.getString("retqty"));
+
+                alPsv2.add(psv2);
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Query: getAllPurchaseSubV2 ex: "+ex.getMessage(),
+                    "SQL Error Found",JOptionPane.ERROR_MESSAGE);
+            return null;
+        } finally {
+            try {
+                if (conn!=null) conn.close();
+            } catch(SQLException e) {
+                return null;
+            }
+        }
+        return alPsv2;
+    }
+    
+    public ArrayList<PurchaseGSTV2> getAllPurchaseGSTV2( String pmid ) {
+        ArrayList<PurchaseGSTV2> alPgv2 = new ArrayList<>();
+        dBConnection db=new dBConnection();
+        Connection conn=db.setConnection();
+        try {
+            Statement smt=conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            String query="select pgstid, pmid, gstper, taxableamt, gstamt from PurchaseGSTV2 where pmid="+pmid; 
+            ResultSet rs=smt.executeQuery(query);
+            while(rs.next()) {    
+                PurchaseGSTV2 pgv2 = new PurchaseGSTV2();
+                // Table PurchaseGSTV2, no. of columns - 5
+                /*
+                pgstid, pmid, gstper, taxableamt, gstamt
+                */
+                pgv2.setPgstid(rs.getString("pgstid"));
+                pgv2.setPmid(rs.getString("pmid"));
+                pgv2.setGstper(rs.getString("gstper"));
+                pgv2.setTaxableamt(rs.getString("taxableamt"));
+                pgv2.setGstamt(rs.getString("gstamt"));
+
+                alPgv2.add(pgv2);
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Query: getAllPurchaseGSTV2 ex: "+ex.getMessage(),
+                    "SQL Error Found",JOptionPane.ERROR_MESSAGE);
+            return null;
+        } finally {
+            try {
+                if (conn!=null) conn.close();
+            } catch(SQLException e) {
+                return null;
+            }
+        }
+        return alPgv2;
     }
     
     public PurchaseMasterV2 getPurchaseMasterV2( String pmid ) {
@@ -1766,6 +1848,57 @@ public class Query {
             }
         }
         return ss;
+    }
+    
+    public ArrayList<SaleSubV2> getAllSaleSubV2( String salemid ) {
+        ArrayList<SaleSubV2> alSsv2 = new ArrayList<>();
+        dBConnection db=new dBConnection();
+        Connection conn=db.setConnection();
+        try {
+            Statement smt=conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+            // Table SaleSubV2, no. of columns - 17
+            /*
+            salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
+            gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
+            */
+            String query="select salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, gross, "
+                    + "itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty from SaleSubV2 where salemid='"+salemid+"'"; 
+            ResultSet rs=smt.executeQuery(query);
+            while(rs.next()) {    
+                SaleSubV2 ssv2 = new SaleSubV2();
+                ssv2.setSalesid(rs.getString("salesid"));
+                ssv2.setSalemid(rs.getString("salemid"));
+                ssv2.setPsid(rs.getString("psid"));
+                ssv2.setItemdid(rs.getString("itemdid"));
+                ssv2.setMrp(rs.getString("mrp"));
+                ssv2.setGst(rs.getString("gst"));
+                ssv2.setQty(rs.getString("qty"));
+                ssv2.setFree(rs.getString("free"));
+                ssv2.setUnitnetrate(rs.getString("unitnetrate"));
+                ssv2.setRate(rs.getString("rate"));
+                ssv2.setGross(rs.getString("gross"));
+                ssv2.setItemdiscper(rs.getString("itemdiscper"));
+                ssv2.setItemdiscamt(rs.getString("itemdiscamt"));
+                ssv2.setCashdiscamt(rs.getString("cashdiscamt"));
+                ssv2.setGstamt(rs.getString("gstamt"));
+                ssv2.setAmount(rs.getString("amount"));
+                ssv2.setRetqty(rs.getString("retqty"));
+
+                alSsv2.add(ssv2);
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Query: getAllSaleSubV2 ex: "+ex.getMessage(),
+                    "SQL Error Found",JOptionPane.ERROR_MESSAGE);
+            return null;
+        } finally {
+            try {
+                if (conn!=null) conn.close();
+            } catch(SQLException e) {
+                return null;
+            }
+        }
+        return alSsv2;
     }
     
     public Retailer getRetailer( String retid )

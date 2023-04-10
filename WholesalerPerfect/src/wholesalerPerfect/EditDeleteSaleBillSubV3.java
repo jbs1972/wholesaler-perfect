@@ -47,7 +47,6 @@ import query.Query;
 import utilities.DateConverter;
 import utilities.MyNumberFormat;
 import utilities.Settings;
-import utilities.RoundOff;
 import static utilities.RoundOff.roundToAnyDecimalPlace;
 
 public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implements AWTEventListener {
@@ -72,7 +71,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
     private String currentPsid;
     private String currentItemdid;
     private int avlqty;
-    private ArrayList<SaleSubV2> ssAl = new ArrayList<SaleSubV2>();
+    private ArrayList<SaleSubV2> ssAl = null;
     private String currentGstAmt;
     private SaleMasterV2 sm;
     private SaleMasterV2 oldSm;
@@ -84,7 +83,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         this.up = up;
         this.e = e;
         this.sm = sm;
-        this.ssAl = sm.getSsAl();
+        this.ssAl = q.getAllSaleSubV2(sm.getSalemid());
         this.oldSm = q.getSaleMasterV2(this.sm.getSalemid());
         Dimension d=getSize();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
