@@ -478,6 +478,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         try {
             int qty = Integer.parseInt(jTextField7.getText());
             int free = Integer.parseInt(jTextField8.getText());
+            System.out.println("============> avlqty: "+avlqty);
             if ( (qty+free) > avlqty ) {
                 JOptionPane.showMessageDialog(null,"Quantity for Sale can't be > available quantity in Purchase !!!",
                         "Error Found",JOptionPane.ERROR_MESSAGE);
@@ -514,6 +515,8 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         /*
         psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
         */
+        System.out.println("========>currentPsid: "+currentPsid);
+        System.out.println("========>currentItemdid: "+currentItemdid);
         if (currentPsid == null || currentItemdid == null) {
             JOptionPane.showMessageDialog(null,"Item should be selected from Purchase using F5 !!!",
                     "Error Found",JOptionPane.ERROR_MESSAGE);
@@ -2538,6 +2541,8 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                     salesid, salemid, psid, itemdid, mrp, gst, qty, free, unitnetrate, rate, 
                     gross, itemdiscper, itemdiscamt, cashdiscamt, gstamt, amount, retqty
                     */
+                    currentPsid = ss.getPsid();
+                    currentItemdid = ss.getItemdid();
                     // Number of columns in ItemMaster: 5
                     /* itemmid, compid, itemnm, hsn, isactive */
                     // Number of columns in ItemDetails: 10
@@ -2545,6 +2550,12 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                     String query="select itemnm, hsn from ItemMaster, ItemDetails"
                             + " where ItemMaster.itemmid=ItemDetails.itemmid and itemdid="+ss.getItemdid();
                     System.out.println(query);
+                    // Table PurchaseSubV2, no. of columns - 12
+                    /*
+                    psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
+                    */
+                    String sql = "select qty-(qtysold+retqty) as avlqty from PurchaseSubV2 "
+                            + "where itemdid="+ss.getItemdid();
                     dBConnection db=new dBConnection();
                     Connection conn=db.setConnection();
                     try {
@@ -2553,6 +2564,11 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                         if(rs.next()) {
                             jComboBox3.setSelectedItem(rs.getString("itemnm").replace("\\'", "'"));
                             jLabel17.setText(rs.getString("hsn"));
+                        }
+                        Statement stm1=conn.createStatement();
+                        ResultSet rs1=stm1.executeQuery(sql);
+                        if(rs1.next()) {
+                            avlqty = Integer.parseInt(rs1.getString("avlqty"));
                         }
                     } catch(SQLException ex) {
                         ex.printStackTrace();
@@ -2568,7 +2584,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                     jLabel21.setText(format.format(Double.parseDouble(ss.getGst())));
                     jTextField7.setText(ss.getQty());
                     jTextField8.setText(ss.getFree());
-                    jTextField9.setText(ss.getUnitnetrate());
+                    jTextField9.setText(format2afterDecimal.format(Double.parseDouble(ss.getUnitnetrate())));
                     jLabel26.setText(MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getRate())));
                     jLabel28.setText(MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getGross())));
                     jLabel30.setText(MyNumberFormat.rupeeFormat(Double.parseDouble(ss.getCashdiscamt())));
