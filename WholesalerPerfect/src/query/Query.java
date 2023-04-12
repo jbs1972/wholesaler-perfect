@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -598,6 +600,8 @@ public class Query {
     }
     
     public boolean deleteFromPurchaseMasterV2(PurchaseMasterV2 pm) {
+        int ilid = getMaxId("ItemLedger", "ilid");
+        
         dBConnection db = new dBConnection();
         Connection conn = db.setConnection();
         
@@ -607,6 +611,7 @@ public class Query {
         PreparedStatement psmt4 = null;
         PreparedStatement psmt5 = null;
         PreparedStatement psmt6 = null;
+        PreparedStatement psmt7 = null;
 
         // Table PurchaseMasterV2, no. of columns - 20
         /*
@@ -625,8 +630,12 @@ public class Query {
         String updaetSQL1 = "UPDATE ItemDetails SET onhand=onhand-? WHERE itemdid=?";
         // Number of columns in ItemLedger: 9
         /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
+        /*
         String deleteSQL3 = "DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='PurchaseSubv2'"
-                + " AND pknm='psid' AND pkval=? AND actiondt=? AND type='ADD'";        
+                + " AND pknm='psid' AND pkval=? AND actiondt=? AND type='ADD'"; 
+        */
+        String deleteSQL3 = "insert into ItemLedger (ilid, itemdid, tablenm, pknm, pkval, actiondt, "
+                + "type, prevqty, qty) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         // Number of columns in PurchasePaymentRegister: 7
         /* pprid, pknm, pkval, actiondt, refno, type, amount */
         String deleteSQL4 = "DELETE FROM PurchasePaymentRegister WHERE pknm='pmid' AND pkval=?"
@@ -636,6 +645,9 @@ public class Query {
         pgstid, pmid, gstper, taxableamt, gstamt
         */
         String deleteSQL5 = "DELETE FROM PurchaseGSTV2 WHERE pmid=?";
+        // Number of columns in ItemDetails: 10
+        /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
+        String selectSQL = "select onhand from ItemDetails where itemdid=?";
         try {
             conn.setAutoCommit(false);
             
@@ -646,19 +658,32 @@ public class Query {
             psmt4 = conn.prepareStatement(deleteSQL2);
             psmt5 = conn.prepareStatement(deleteSQL4);
             psmt6 = conn.prepareStatement(deleteSQL5);
+            psmt7 = conn.prepareStatement(selectSQL);
             
+            String pervqty = null;
             for(PurchaseSubV2 ref : pm.getPsAl()) {
+                psmt7.setInt(1, Integer.parseInt(ref.getItemdid()));
+                ResultSet rs = psmt7.executeQuery();
+                if (rs.next()) {
+                    pervqty = rs.getString("onhand");
+                }
+                
                 psmt1.setInt(1, Integer.parseInt(ref.getQty()));
                 psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
                 psmt1.addBatch();
                 
-                psmt2.setInt(1, Integer.parseInt(ref.getItemdid()));
-                System.out.println("========itemdid===========>"+ref.getItemdid());
-                psmt2.setString(2, ref.getPsid());
-                System.out.println("========psid===========>"+ref.getPsid());
-                psmt2.setDate(3, java.sql.Date.valueOf(DateConverter.dateConverter1(pm.getInvdt())));
-                System.out.println("========invdt===========>"+pm.getInvdt());
-                System.out.println("========modified invdt===========>"+DateConverter.dateConverter1(pm.getInvdt()));
+                psmt2.setInt(1, ++ilid);
+                psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
+                psmt2.setString(3, "PurchaseSubV2");
+                psmt2.setString(4, "psid");
+                psmt2.setString(5, ref.getPsid());
+                LocalDate currentDate = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String formattedDate = currentDate.format(formatter);
+                psmt2.setDate(6, java.sql.Date.valueOf(formattedDate));
+                psmt2.setString(7, "LESS");
+                psmt2.setInt(8, Integer.parseInt(pervqty));
+                psmt2.setInt(9, Integer.parseInt(ref.getQty()));
                 psmt2.addBatch();
             }
             psmt1.executeBatch();
@@ -729,6 +754,13 @@ public class Query {
                     ex.printStackTrace();
                 }
             }
+            if (psmt7 != null) {
+                try {
+                    psmt7.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             if (conn != null) {
                 db=null;
                 try {
@@ -742,6 +774,9 @@ public class Query {
     }
     
     public boolean deleteFromSaleMasterV2(SaleMasterV2 sm) {
+        
+        int ilid = getMaxId("ItemLedger", "ilid");
+        
         dBConnection db = new dBConnection();
         Connection conn = db.setConnection();
         
@@ -751,6 +786,7 @@ public class Query {
         PreparedStatement psmt4 = null;
         PreparedStatement psmt5 = null;
         PreparedStatement psmt6 = null;
+        PreparedStatement psmt7 = null;
 
         // Table SaleMasterV2, no. of columns - 24
         /*
@@ -770,8 +806,12 @@ public class Query {
         String updaetSQL1 = "UPDATE ItemDetails SET onhand=onhand+? WHERE itemdid=?";
         // Number of columns in ItemLedger: 9
         /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
+        /*
         String deleteSQL3 = "DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='SaleSubV2'"
-                + " AND pknm='salesid' AND pkval=? AND actiondt=? AND type='LESS'";        
+                + " AND pknm='salesid' AND pkval=? AND actiondt=? AND type='LESS'";
+        */
+        String deleteSQL3 = "insert into ItemLedger (ilid, itemdid, tablenm, pknm, pkval, actiondt, "
+                + "type, prevqty, qty) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         // Number of columns in SalePaymentRegister: 7
         /* sprid, pknm, pkval, actiondt, refno, type, amount */
         String deleteSQL4 = "DELETE FROM SalePaymentRegister WHERE pknm='salemid' AND pkval=?"
@@ -781,6 +821,9 @@ public class Query {
         psid, pmid, itemdid, mrp, gst, qty, rate, discper, discamt, amount, qtysold, retqty
         */
         String updaetSQL2 = "update PurchaseSubV2 set qtysold=qtysold-? where psid=?";
+        // Number of columns in ItemDetails: 10
+        /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
+        String selectSQL = "select onhand from ItemDetails where itemdid=?";
         try {
             conn.setAutoCommit(false);
             
@@ -791,20 +834,32 @@ public class Query {
             psmt4 = conn.prepareStatement(deleteSQL2);
             psmt5 = conn.prepareStatement(deleteSQL4);
             psmt6 = conn.prepareStatement(updaetSQL2);
+            psmt7 = conn.prepareStatement(selectSQL);
             
+            String pervqty = null;
             for(SaleSubV2 ref : sm.getSsAl()) {
+                psmt7.setInt(1, Integer.parseInt(ref.getItemdid()));
+                ResultSet rs = psmt7.executeQuery();
+                if (rs.next()) {
+                    pervqty = rs.getString("onhand");
+                }
+                
                 psmt1.setInt(1, Integer.parseInt(ref.getQty()));
                 psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
                 psmt1.addBatch();
                 
-                // DELETE FROM ItemLedger WHERE itemdid=? AND tablenm='SaleSubV2'"+" AND pknm='salesid' AND pkval=? AND actiondt=? AND type='LESS'
-                psmt2.setInt(1, Integer.parseInt(ref.getItemdid()));
-                System.out.println("========itemdid===========>"+ref.getItemdid());
-                psmt2.setString(2, ref.getSalesid());
-                System.out.println("========ssid===========>"+ref.getSalesid());
-                psmt2.setDate(3, java.sql.Date.valueOf(DateConverter.dateConverter1(sm.getSaledt())));
-                System.out.println("========invdt===========>"+sm.getSaledt());
-                System.out.println("========modified invdt===========>"+DateConverter.dateConverter1(sm.getSaledt()));
+                psmt2.setInt(1, ++ilid);
+                psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
+                psmt2.setString(3, "SaleSubV2");
+                psmt2.setString(4, "salesid");
+                psmt2.setString(5, ref.getSalesid());
+                LocalDate currentDate = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String formattedDate = currentDate.format(formatter);
+                psmt2.setDate(6, java.sql.Date.valueOf(formattedDate));
+                psmt2.setString(7, "ADD");
+                psmt2.setInt(8, Integer.parseInt(pervqty));
+                psmt2.setInt(9, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                 psmt2.addBatch();
                 
                 psmt6.setInt(1, Integer.parseInt(ref.getQty()));
@@ -874,6 +929,13 @@ public class Query {
             if (psmt6 != null) {
                 try {
                     psmt6.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (psmt7 != null) {
+                try {
+                    psmt7.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
