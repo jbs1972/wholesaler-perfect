@@ -298,7 +298,7 @@ public class DailyDispatchReport extends javax.swing.JInternalFrame implements A
                     ddr.setHsn(hsn);
                     String mrp = MyNumberFormat.rupeeFormat(Double.parseDouble(rs.getString("mrp")));
                     row.addElement(mrp);
-                    ddr.setMrp(mrp);
+                    ddr.setMrp(rs.getString("mrp"));
                     row.addElement(format.format(Double.parseDouble(rs.getString("gst"))));
                     row.addElement(MyNumberFormat.rupeeFormat(Double.parseDouble(rs.getString("sexgst"))));
                     row.addElement(MyNumberFormat.rupeeFormat(Double.parseDouble(rs.getString("singst"))));

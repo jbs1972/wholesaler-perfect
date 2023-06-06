@@ -247,7 +247,7 @@ public class ItemStockReport extends javax.swing.JInternalFrame implements AWTEv
                 + "(select itemmid, compid, itemnm, hsn from ItemMaster where isactive=1"+b+") b, "
                 + "(select itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst from ItemDetails "
                 + "where isactive=1) c where a.compid = b.compid and b.itemmid = c.itemmid "
-                + "order by a.compid, b.itemmid, c.itemdid";
+                + "order by a.compid, b.itemnm";
         System.out.println(sql);
         dBConnection db=new dBConnection();
         Connection conn=db.setConnection();
