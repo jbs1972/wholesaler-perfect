@@ -49,6 +49,7 @@ import utilities.Add0Padding6;
 import utilities.DateConverter;
 import utilities.MyNumberFormat;
 import utilities.Settings;
+import java.util.HashMap;
 
 public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListener {
 
@@ -972,7 +973,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
             {
                 conn.setAutoCommit(false);
                 
-                String pervqty = null;
+                int pervqty = 0;
                 // Number of columns in ItemDetails: 10
                 /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
                 String sql1 = "select onhand from ItemDetails where itemdid=?";
@@ -997,12 +998,35 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 */
                 String sql4 = "update PurchaseSubV2 set qtysold=qtysold+? where psid=?";
                 psmt4 = conn.prepareStatement(sql4);
+                
+                HashMap<String, Integer> hashMap = new HashMap<>();
+
                 for( SaleSubV2 ref : sm.getSsAl() )
                 {
                     psmt1.setInt(1, Integer.parseInt(ref.getItemdid()));
                     ResultSet rs = psmt1.executeQuery();
                     if (rs.next()) {
-                        pervqty = rs.getString("onhand");
+                        pervqty = Integer.parseInt(rs.getString("onhand"));
+                    }
+                    
+                    // Creating the HashMap to identify items with same itemdid
+                    if (hashMap.isEmpty()) {
+                        hashMap.put(ref.getItemdid(), pervqty - 
+                                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                    } else {
+                        boolean flag = true;
+                        for (String key : hashMap.keySet()) {
+                            if (hashMap.containsKey(ref.getItemdid())) {
+                                flag = false;
+                                pervqty = hashMap.get(ref.getItemdid());
+                                hashMap.put(ref.getItemdid(), hashMap.get(ref.getItemdid()) - 
+                                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                            }
+                        }
+                        if (flag) {
+                            hashMap.put(ref.getItemdid(), pervqty - 
+                                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                        }
                     }
                     
                     psmt2.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
@@ -1016,7 +1040,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                     psmt3.setString(5, ref.getSalesid());
                     psmt3.setDate(6, java.sql.Date.valueOf(DateConverter.dateConverter1(saledt)));
                     psmt3.setString(7, "LESS");
-                    psmt3.setInt(8, Integer.parseInt(pervqty));
+                    psmt3.setInt(8, pervqty);
                     psmt3.setInt(9, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                     psmt3.addBatch();
                     
