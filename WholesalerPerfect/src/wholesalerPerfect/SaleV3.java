@@ -985,7 +985,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 */
                 // Number of columns in ItemDetails: 10
                 /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
-                String sql2 = "update ItemDetails set onhand=onhand-? where itemdid=?";
+                String sql2 = "update ItemDetails set onhand=? where itemdid=?";
                 psmt2 = conn.prepareStatement(sql2);
                 // Number of columns in ItemLedger: 9
                 /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
@@ -1029,7 +1029,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                         }
                     }
                     
-                    psmt2.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
+                    psmt2.setInt(1, pervqty - (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                     psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
                     psmt2.addBatch();
                     

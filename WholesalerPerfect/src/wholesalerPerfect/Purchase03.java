@@ -1027,7 +1027,7 @@ public class Purchase03 extends javax.swing.JInternalFrame implements AWTEventLi
                 String sql1 = "select onhand from ItemDetails where itemdid=?";
                 psmt1 = conn.prepareStatement(sql1);
                 
-                String sql2 = "update ItemDetails set onhand=onhand+? where itemdid=?";
+                String sql2 = "update ItemDetails set onhand=? where itemdid=?";
                 psmt2 = conn.prepareStatement(sql2);
                 // Number of columns in ItemLedger: 9
                 /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
@@ -1061,7 +1061,7 @@ public class Purchase03 extends javax.swing.JInternalFrame implements AWTEventLi
                         }
                     }
                     
-                    psmt2.setInt(1, Integer.parseInt(ref.getQty()));
+                    psmt2.setInt(1, pervqty + Integer.parseInt(ref.getQty()));
                     psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
                     psmt2.addBatch();
                     
