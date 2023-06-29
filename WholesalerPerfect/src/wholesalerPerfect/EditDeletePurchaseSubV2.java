@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -848,7 +849,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                     taxableamt, gstamt, qtysold, retqty, tradediscamt, replacementdiscamt */
                     // Number of columns in ItemDetails: 10
                     /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
-                    String sql2 = "update ItemDetails set onhand=? where itemdid=?";
+                    String sql2 = "update ItemDetails set onhand=onhand+? where itemdid=?";
                     psmt2 = conn.prepareStatement(sql2);
                     // Number of columns in ItemLedger: 9
                     /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
@@ -857,6 +858,7 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                     psmt3 = conn.prepareStatement(sql3);
                     
                     HashMap<String, Integer> hashMap = new HashMap<>();
+                    HashMap<Integer, Integer> itemDetailsHashMap = new HashMap<>();
 
                     for( PurchaseSubV2 ref : pm.getPsAl() ) {
                         psmt1.setInt(1, Integer.parseInt(ref.getItemdid()));
@@ -871,10 +873,10 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                         } else {
                             boolean flag = true;
                             for (String key : hashMap.keySet()) {
-                                if (hashMap.containsKey(ref.getItemdid())) {
+                                if (key.equals(ref.getItemdid())) {
                                     flag = false;
-                                    pervqty = hashMap.get(ref.getItemdid());
-                                    hashMap.put(ref.getItemdid(), hashMap.get(ref.getItemdid()) + Integer.parseInt(ref.getQty()));
+                                    pervqty = hashMap.get(key);
+                                    hashMap.put(key, hashMap.get(key) + Integer.parseInt(ref.getQty()));
                                 }
                             }
                             if (flag) {
@@ -882,9 +884,29 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                             }
                         }
                         
-                        psmt2.setInt(1, pervqty + Integer.parseInt(ref.getQty()));
-                        psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
-                        psmt2.addBatch();
+                        // Creating HashMap for ItemDetails
+                        if (itemDetailsHashMap.isEmpty()) {
+                            itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), 
+                                    Integer.parseInt(ref.getQty()));
+                        } else {
+                            boolean flag = true;
+                            for (Integer key : itemDetailsHashMap.keySet()) {
+                                if (key == Integer.parseInt(ref.getItemdid())) {
+                                    flag = false;
+                                    itemDetailsHashMap.put(key, itemDetailsHashMap.get(key) + 
+                                        Integer.parseInt(ref.getQty()));
+                                }
+                            }
+                            if (flag) {
+                                itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), 
+                                    Integer.parseInt(ref.getQty()));
+                            }
+                        }
+                        
+//                        psmt2.setInt(1, pervqty + Integer.parseInt(ref.getQty()));
+//                        psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
+//                        psmt2.addBatch();
+//                        psmt2.executeUpdate();
 
                         psmt3.setInt(1, ++ilid);
                         psmt3.setInt(2, Integer.parseInt(ref.getItemdid()));
@@ -897,8 +919,15 @@ public class EditDeletePurchaseSubV2 extends javax.swing.JInternalFrame implemen
                         psmt3.setInt(9, Integer.parseInt(ref.getQty()));
                         psmt3.addBatch();
                     }
-                    psmt2.executeBatch();
                     psmt3.executeBatch();
+                    
+                    for (Map.Entry<Integer,Integer> entry : itemDetailsHashMap.entrySet()) {
+                        System.out.println("Purchase-----------> Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                        psmt2.setInt(1, entry.getValue());
+                        psmt2.setInt(2, entry.getKey());
+                        psmt2.addBatch();
+                    }
+                    psmt2.executeBatch();
 
                     // Number of columns in PurchasePaymentRegister: 7
                     /* pprid, pknm, pkval, actiondt, refno, type, amount */

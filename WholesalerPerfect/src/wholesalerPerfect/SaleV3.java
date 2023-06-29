@@ -50,6 +50,7 @@ import utilities.DateConverter;
 import utilities.MyNumberFormat;
 import utilities.Settings;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListener {
 
@@ -569,6 +570,12 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
         String mrp = jLabel19.getText().trim().replaceAll(",", "");
         String gst = jLabel21.getText().trim().replaceAll(",", "");
         String unitnetrate = jTextField9.getText();
+        if (Double.parseDouble(unitnetrate) <= 0.0f) {
+            JOptionPane.showMessageDialog(null,(qty+free)+"Unitprice is mandatory !!!",
+                    "Error Found",JOptionPane.ERROR_MESSAGE);
+            jTextField9.requestFocusInWindow();
+            return;
+        }
         String rate = jLabel26.getText().trim().replaceAll(",", "");
         String gross = jLabel28.getText().trim().replaceAll(",", "");
         String itemdiscper = "0";
@@ -985,7 +992,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 */
                 // Number of columns in ItemDetails: 10
                 /* itemdid, itemmid, mrp, gst, pexgst, pingst, sexgst, singst, onhand, isactive */
-                String sql2 = "update ItemDetails set onhand=? where itemdid=?";
+                String sql2 = "update ItemDetails set onhand=onhand-? where itemdid=?";
                 psmt2 = conn.prepareStatement(sql2);
                 // Number of columns in ItemLedger: 9
                 /* ilid, itemdid, tablenm, pknm, pkval, actiondt, type, prevqty, qty */
@@ -1000,6 +1007,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 psmt4 = conn.prepareStatement(sql4);
                 
                 HashMap<String, Integer> hashMap = new HashMap<>();
+                HashMap<Integer, Integer> itemDetailsHashMap = new HashMap<>();
 
                 for( SaleSubV2 ref : sm.getSsAl() )
                 {
@@ -1009,29 +1017,52 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                         pervqty = Integer.parseInt(rs.getString("onhand"));
                     }
                     
-                    // Creating the HashMap to identify items with same itemdid
+                    // Creating the HashMap to identify items with same itemdid for ItemLedger
                     if (hashMap.isEmpty()) {
                         hashMap.put(ref.getItemdid(), pervqty - 
-                                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                            (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                     } else {
                         boolean flag = true;
                         for (String key : hashMap.keySet()) {
-                            if (hashMap.containsKey(ref.getItemdid())) {
+                            if (key.equals(ref.getItemdid())) {
                                 flag = false;
-                                pervqty = hashMap.get(ref.getItemdid());
-                                hashMap.put(ref.getItemdid(), hashMap.get(ref.getItemdid()) - 
-                                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                                pervqty = hashMap.get(key);
+                                hashMap.put(key, hashMap.get(key) - 
+                                    (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                             }
                         }
                         if (flag) {
                             hashMap.put(ref.getItemdid(), pervqty - 
-                                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                                (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                        }
+                    }
+//                    System.out.println("HashMap content:---------------------");
+//                    for (Map.Entry<String,Integer> entry : hashMap.entrySet()) 
+//                        System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                    
+                    // Creating HashMap for ItemDetails
+                    if (itemDetailsHashMap.isEmpty()) {
+                        itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), 
+                            (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                    } else {
+                        boolean flag = true;
+                        for (Integer key : itemDetailsHashMap.keySet()) {
+                            if (key == Integer.parseInt(ref.getItemdid())) {
+                                flag = false;
+                                itemDetailsHashMap.put(key, itemDetailsHashMap.get(key) + 
+                                    (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                            }
+                        }
+                        if (flag) {
+                            itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), 
+                                (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                         }
                     }
                     
-                    psmt2.setInt(1, pervqty - (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
-                    psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
-                    psmt2.addBatch();
+//                    psmt2.setInt(1, pervqty - (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+//                    psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
+//                    psmt2.addBatch();
+//                    psmt2.executeUpdate();
                     
                     psmt3.setInt(1, ++ilid);
                     psmt3.setInt(2, Integer.parseInt(ref.getItemdid()));
@@ -1048,9 +1079,16 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                     psmt4.setInt(2, Integer.parseInt(ref.getPsid()));
                     psmt4.addBatch();
                 }
-                psmt2.executeBatch();
                 psmt3.executeBatch();
                 psmt4.executeBatch();
+                
+                for (Map.Entry<Integer,Integer> entry : itemDetailsHashMap.entrySet()) {
+                    System.out.println("Sale-----------> Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                    psmt2.setInt(1, entry.getValue());
+                    psmt2.setInt(2, entry.getKey());
+                    psmt2.addBatch();
+                }
+                psmt2.executeBatch();
                 
                 // Number of columns in SalePaymentRegister: 7
                 /* sprid, pknm, pkval, actiondt, refno, type, amount */
