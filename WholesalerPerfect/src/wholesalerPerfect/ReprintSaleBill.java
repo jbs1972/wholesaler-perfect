@@ -207,7 +207,7 @@ public class ReprintSaleBill extends javax.swing.JInternalFrame implements AWTEv
         String query="select salemid, saledt, beatabbr, totlines, retnm, netpayableamt, summrp from "
                 + "(select"+e+" salemid, retid, saledt, netpayableamt from SaleMasterV2 where isactive=1"
                 + x+y+b+" order by saledt desc) x, (select retid, retnm, beatid from Retailer where"
-                + " isactive=1"+c+d+") y, (select beatid, beatabbr from BeatMaster where isactive=1"
+                + " isactive=1"+d+") y, (select beatid, beatabbr from BeatMaster where isactive=1"
                 + c+") z, (select salemid, count(salesid) as totlines, sum(mrp*qty) as summrp from"
                 + " SaleSubV2 group by salemid) a where x.retid=y.retid and y.beatid=z.beatid and "
                 + "x.salemid=a.salemid order by saledt desc, salemid desc";

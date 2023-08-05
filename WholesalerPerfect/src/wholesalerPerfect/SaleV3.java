@@ -104,7 +104,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
         
         ((DefaultTableCellRenderer)jTable1.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
         ((JLabel)jComboBox1.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-        ((JLabel)jComboBox2.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+//        ((JLabel)jComboBox2.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         ((JLabel)jComboBox3.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         
         settings.numvalidatorFloat(jTextField6);
@@ -249,10 +249,11 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 jComboBox2.addItem("-- Select --");
                 int i=0;
                 while(rs.next()) {
+//                    System.out.println(rs.getString("retid")+"----------"+rs.getString("beatabbr") + "----------"+rs.getString("retnm"));
                     retidArray[i]=rs.getString("retid");
                     String beatabbr = rs.getString("beatabbr");
                     beatabbrArray[i] = beatabbr;
-                    jComboBox2.addItem(rs.getString("retnm"));
+                    jComboBox2.addItem(rs.getString("retnm")+"-"+rs.getString("beatabbr"));
                     i++;
                 }
             }
@@ -2140,7 +2141,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel48)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2186,8 +2187,8 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -2246,7 +2247,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
@@ -2293,6 +2294,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
             if(((String)jComboBox2.getSelectedItem()).equals("-- Select --")) {
                 jLabel6.setText("N/A");
             } else {
+//                System.out.println("-------------"+(jComboBox2.getSelectedIndex()-1));
                 jLabel6.setText(beatabbrArray[jComboBox2.getSelectedIndex()-1]);
             }
         }

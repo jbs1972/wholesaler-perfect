@@ -105,7 +105,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
         map.put(stroke,"test");
         
         ((DefaultTableCellRenderer)jTable1.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        ((JLabel)jComboBox2.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+//        ((JLabel)jComboBox2.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         ((JLabel)jComboBox3.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         
         settings.numvalidatorFloat(jTextField6);
@@ -213,7 +213,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                     retidArray[i]=rs.getString("retid");
                     String beatabbr = rs.getString("beatabbr");
                     beatabbrArray[i] = beatabbr;
-                    jComboBox2.addItem(rs.getString("retnm"));
+                    jComboBox2.addItem(rs.getString("retnm")+"-"+rs.getString("beatabbr"));
                     i++;
                 }
             }
@@ -351,7 +351,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
             Statement smt=conn.createStatement();
             ResultSet rs=smt.executeQuery(query);
             if(rs.next()) {
-                jComboBox2.setSelectedItem(rs.getString("retnm"));
+                jComboBox2.setSelectedItem(rs.getString("retnm")+"-"+rs.getString("beatabbr"));
                 jLabel6.setText(rs.getString("beatabbr"));
             }
         } catch(Exception ex) {
@@ -2033,7 +2033,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 167, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel48)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2079,8 +2079,8 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -2138,7 +2138,7 @@ public class EditDeleteSaleBillSubV3 extends javax.swing.JInternalFrame implemen
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         pack();

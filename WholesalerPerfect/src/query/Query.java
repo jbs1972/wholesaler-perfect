@@ -844,7 +844,7 @@ public class Query {
                     pervqty = rs.getString("onhand");
                 }
                 
-                psmt1.setInt(1, Integer.parseInt(ref.getQty()));
+                psmt1.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                 psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
                 psmt1.addBatch();
                 
@@ -862,7 +862,7 @@ public class Query {
                 psmt2.setInt(9, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                 psmt2.addBatch();
                 
-                psmt6.setInt(1, Integer.parseInt(ref.getQty()));
+                psmt6.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                 psmt6.setInt(2, Integer.parseInt(ref.getPsid()));
                 psmt6.addBatch();
             }

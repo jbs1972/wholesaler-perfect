@@ -165,7 +165,9 @@ public class Sale_GSTReport extends javax.swing.JInternalFrame implements AWTEve
         rpin, rcountry, rcontact, rmail, rgstno, rgstregntype, rpanno, raadhaarno, isactive*/
         // Number of columns in BeatMaster: 4
         /* beatid, beatnm, beatabbr, isactive */
-        String query="select retid, retnm from Retailer where isactive=1 order by retnm asc";
+        String query="select retid, retnm, beatabbr from Retailer, BeatMaster "
+                + "where Retailer.beatid=BeatMaster.beatid and Retailer.isactive=1 "
+                + "and BeatMaster.isactive=1 order by retnm asc";
         System.out.println(query);
         try {
             Statement smt=conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
@@ -185,7 +187,7 @@ public class Sale_GSTReport extends javax.swing.JInternalFrame implements AWTEve
                 int i=0;
                 while(rs.next()) {
                     retidArray[i++]=rs.getString("retid");
-                    jComboBox2.addItem(rs.getString("retnm"));
+                    jComboBox2.addItem(rs.getString("retnm")+"-"+rs.getString("beatabbr"));
                 }
             }
         } catch(SQLException ex) {
