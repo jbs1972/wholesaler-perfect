@@ -325,7 +325,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
     }
     
     private void populateCombo3() { // Item HSN
-        if (jComboBox3.getSelectedIndex()==0) {
+        if (jComboBox1.getSelectedIndex()==0) {
             return;
         }
         dBConnection db=new dBConnection();

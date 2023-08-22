@@ -25,6 +25,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import utilities.DateConverter;
 
@@ -660,17 +662,54 @@ public class Query {
             psmt6 = conn.prepareStatement(deleteSQL5);
             psmt7 = conn.prepareStatement(selectSQL);
             
-            String pervqty = null;
+            int pervqty = 0;
+            
+            HashMap<String, Integer> hashMap = new HashMap<>();
+            HashMap<Integer, Integer> itemDetailsHashMap = new HashMap<>();
+            
             for(PurchaseSubV2 ref : pm.getPsAl()) {
                 psmt7.setInt(1, Integer.parseInt(ref.getItemdid()));
                 ResultSet rs = psmt7.executeQuery();
                 if (rs.next()) {
-                    pervqty = rs.getString("onhand");
+                    pervqty = Integer.parseInt(rs.getString("onhand"));
                 }
                 
-                psmt1.setInt(1, Integer.parseInt(ref.getQty()));
-                psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
-                psmt1.addBatch();
+                // Creating the HashMap to identify items with same itemdid for ItemLedger
+                if (hashMap.isEmpty()) {
+                    hashMap.put(ref.getItemdid(), pervqty - Integer.parseInt(ref.getQty()));
+                } else {
+                    boolean flag = true;
+                    for (String key : hashMap.keySet()) {
+                        if (key.equals(ref.getItemdid())) {
+                            flag = false;
+                            pervqty = hashMap.get(key);
+                            hashMap.put(key, hashMap.get(key) - Integer.parseInt(ref.getQty()));
+                        }
+                    }
+                    if (flag) {
+                        hashMap.put(ref.getItemdid(), pervqty - Integer.parseInt(ref.getQty()));
+                    }
+                }
+                
+                // Creating HashMap for ItemDetails
+                if (itemDetailsHashMap.isEmpty()) {
+                    itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), Integer.parseInt(ref.getQty()));
+                } else {
+                    boolean flag = true;
+                    for (Integer key : itemDetailsHashMap.keySet()) {
+                        if (key == Integer.parseInt(ref.getItemdid())) {
+                            flag = false;
+                            itemDetailsHashMap.put(key, itemDetailsHashMap.get(key) + Integer.parseInt(ref.getQty()));
+                        }
+                    }
+                    if (flag) {
+                        itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), Integer.parseInt(ref.getQty()));
+                    }
+                }
+                
+//                psmt1.setInt(1, Integer.parseInt(ref.getQty()));
+//                psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
+//                psmt1.addBatch();
                 
                 psmt2.setInt(1, ++ilid);
                 psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
@@ -682,12 +721,20 @@ public class Query {
                 String formattedDate = currentDate.format(formatter);
                 psmt2.setDate(6, java.sql.Date.valueOf(formattedDate));
                 psmt2.setString(7, "LESS");
-                psmt2.setInt(8, Integer.parseInt(pervqty));
+                psmt2.setInt(8, pervqty);
                 psmt2.setInt(9, Integer.parseInt(ref.getQty()));
                 psmt2.addBatch();
             }
-            psmt1.executeBatch();
+//            psmt1.executeBatch();
             psmt2.executeBatch();
+            
+            for (Map.Entry<Integer,Integer> entry : itemDetailsHashMap.entrySet()) {
+                System.out.println("Sale-----------> Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                psmt1.setInt(1, entry.getValue());
+                psmt1.setInt(2, entry.getKey());
+                psmt1.addBatch();
+            }
+            psmt1.executeBatch();
             
             psmt3.setInt(1, Integer.parseInt(pm.getPmid()));
             psmt3.executeUpdate();
@@ -836,17 +883,60 @@ public class Query {
             psmt6 = conn.prepareStatement(updaetSQL2);
             psmt7 = conn.prepareStatement(selectSQL);
             
-            String pervqty = null;
+            int pervqty = 0;
+            
+            HashMap<String, Integer> hashMap = new HashMap<>();
+            HashMap<Integer, Integer> itemDetailsHashMap = new HashMap<>();
+            
             for(SaleSubV2 ref : sm.getSsAl()) {
                 psmt7.setInt(1, Integer.parseInt(ref.getItemdid()));
                 ResultSet rs = psmt7.executeQuery();
                 if (rs.next()) {
-                    pervqty = rs.getString("onhand");
+                    pervqty = Integer.parseInt(rs.getString("onhand"));
                 }
                 
-                psmt1.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
-                psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
-                psmt1.addBatch();
+                // Creating the HashMap to identify items with same itemdid for ItemLedger
+                if (hashMap.isEmpty()) {
+                    hashMap.put(ref.getItemdid(), pervqty - 
+                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                } else {
+                    boolean flag = true;
+                    for (String key : hashMap.keySet()) {
+                        if (key.equals(ref.getItemdid())) {
+                            flag = false;
+                            pervqty = hashMap.get(key);
+                            hashMap.put(key, hashMap.get(key) - 
+                                (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                        }
+                    }
+                    if (flag) {
+                        hashMap.put(ref.getItemdid(), pervqty - 
+                            (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                    }
+                }
+                
+                // Creating HashMap for ItemDetails
+                if (itemDetailsHashMap.isEmpty()) {
+                    itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), 
+                        (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                } else {
+                    boolean flag = true;
+                    for (Integer key : itemDetailsHashMap.keySet()) {
+                        if (key == Integer.parseInt(ref.getItemdid())) {
+                            flag = false;
+                            itemDetailsHashMap.put(key, itemDetailsHashMap.get(key) + 
+                                (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                        }
+                    }
+                    if (flag) {
+                        itemDetailsHashMap.put(Integer.parseInt(ref.getItemdid()), 
+                            (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
+                    }
+                }
+                
+//                psmt1.setInt(1, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
+//                psmt1.setInt(2, Integer.parseInt(ref.getItemdid()));
+//                psmt1.addBatch();
                 
                 psmt2.setInt(1, ++ilid);
                 psmt2.setInt(2, Integer.parseInt(ref.getItemdid()));
@@ -858,7 +948,7 @@ public class Query {
                 String formattedDate = currentDate.format(formatter);
                 psmt2.setDate(6, java.sql.Date.valueOf(formattedDate));
                 psmt2.setString(7, "ADD");
-                psmt2.setInt(8, Integer.parseInt(pervqty));
+                psmt2.setInt(8, pervqty);
                 psmt2.setInt(9, Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree()));
                 psmt2.addBatch();
                 
@@ -866,9 +956,17 @@ public class Query {
                 psmt6.setInt(2, Integer.parseInt(ref.getPsid()));
                 psmt6.addBatch();
             }
-            psmt1.executeBatch();
+//            psmt1.executeBatch();
             psmt2.executeBatch();
             psmt6.executeBatch();
+            
+            for (Map.Entry<Integer,Integer> entry : itemDetailsHashMap.entrySet()) {
+                System.out.println("Sale-----------> Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                psmt1.setInt(1, entry.getValue());
+                psmt1.setInt(2, entry.getKey());
+                psmt1.addBatch();
+            }
+            psmt1.executeBatch();
             
             psmt3.setString(1, sm.getSalemid());
             psmt3.executeUpdate();

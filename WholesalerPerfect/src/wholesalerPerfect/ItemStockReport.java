@@ -47,7 +47,7 @@ public class ItemStockReport extends javax.swing.JInternalFrame implements AWTEv
     private DecimalFormat format = new DecimalFormat("0.#");
     
     public ItemStockReport(JDesktopPane jDesktopPane1, UserProfile up, Enterprise e) {
-        super("Item Stock Ledger",false,true,false,true);
+        super("Item Stock Report",false,true,false,true);
         initComponents();
         this.jDesktopPane1 = jDesktopPane1;
         this.up = up;
