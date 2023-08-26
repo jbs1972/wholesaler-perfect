@@ -1083,6 +1083,7 @@ public class SaleV3 extends javax.swing.JInternalFrame implements AWTEventListen
                 psmt3.executeBatch();
                 psmt4.executeBatch();
                 
+                // update ItemDetails set onhand=onhand-? where itemdid=?
                 for (Map.Entry<Integer,Integer> entry : itemDetailsHashMap.entrySet()) {
                     System.out.println("Sale-----------> Key = " + entry.getKey() + ", Value = " + entry.getValue());
                     psmt2.setInt(1, entry.getValue());

@@ -897,7 +897,7 @@ public class Query {
                 
                 // Creating the HashMap to identify items with same itemdid for ItemLedger
                 if (hashMap.isEmpty()) {
-                    hashMap.put(ref.getItemdid(), pervqty - 
+                    hashMap.put(ref.getItemdid(), pervqty + 
                         (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                 } else {
                     boolean flag = true;
@@ -905,12 +905,12 @@ public class Query {
                         if (key.equals(ref.getItemdid())) {
                             flag = false;
                             pervqty = hashMap.get(key);
-                            hashMap.put(key, hashMap.get(key) - 
+                            hashMap.put(key, hashMap.get(key) + 
                                 (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                         }
                     }
                     if (flag) {
-                        hashMap.put(ref.getItemdid(), pervqty - 
+                        hashMap.put(ref.getItemdid(), pervqty + 
                             (Integer.parseInt(ref.getQty())+Integer.parseInt(ref.getFree())));
                     }
                 }
